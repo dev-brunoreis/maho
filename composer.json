@@ -1,0 +1,18 @@
+{
+    "name": "mahocommerce/maho-starter",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "type": "project",
+    "minimum-stability": "dev",
+    "require": {
+        "mahocommerce/maho": "*"
+    },
+    "config": {
+        "allow-plugins": {
+            "magento-hackathon/magento-composer-installer": false,
+            "mahocommerce/maho-composer-plugin": true
+        }
+    }
+}

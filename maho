@@ -1,0 +1,103 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Maho
+ *
+ * @category   Maho
+ * @package    MahoCLI
+ * @copyright  Copyright (c) 2024-2026 Maho (https://mahocommerce.com)
+ * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+define('MAHO_ROOT_DIR', __DIR__);
+define('MAHO_PUBLIC_DIR', __DIR__ . '/public');
+
+require __DIR__ . '/vendor/autoload.php';
+
+use MahoCLI\CommandDiscoverer;
+use Symfony\Component\Console\Application;
+
+$application = new class ('Maho', Mage::getVersion()) extends Application {
+    #[\Override]
+    public function getLongVersion(): string
+    {
+        return $this->getVersion();
+    }
+};
+
+$application->addCommand(new \MahoCLI\Commands\AdminUserList());
+$application->addCommand(new \MahoCLI\Commands\AdminUserCreate());
+$application->addCommand(new \MahoCLI\Commands\AdminUserChangepassword());
+$application->addCommand(new \MahoCLI\Commands\AdminUserEnable());
+$application->addCommand(new \MahoCLI\Commands\AdminUserDisable());
+
+$application->addCommand(new \MahoCLI\Commands\CacheEnable());
+$application->addCommand(new \MahoCLI\Commands\CacheDisable());
+$application->addCommand(new \MahoCLI\Commands\CacheFlush());
+$application->addCommand(new \MahoCLI\Commands\CacheMinifyFlush());
+
+$application->addCommand(new \MahoCLI\Commands\CustomerCreate());
+$application->addCommand(new \MahoCLI\Commands\CustomerChangepassword());
+$application->addCommand(new \MahoCLI\Commands\CustomerDelete());
+$application->addCommand(new \MahoCLI\Commands\CustomerList());
+
+$application->addCommand(new \MahoCLI\Commands\DBConnect());
+$application->addCommand(new \MahoCLI\Commands\DBQuery());
+
+$application->addCommand(new \MahoCLI\Commands\EmailConfigShow());
+$application->addCommand(new \MahoCLI\Commands\EmailQueueClear());
+$application->addCommand(new \MahoCLI\Commands\EmailQueueProcess());
+$application->addCommand(new \MahoCLI\Commands\EmailTestQueue());
+$application->addCommand(new \MahoCLI\Commands\EmailTestSend());
+
+$application->addCommand(new \MahoCLI\Commands\IndexList());
+$application->addCommand(new \MahoCLI\Commands\IndexReindex());
+$application->addCommand(new \MahoCLI\Commands\IndexReindexAll());
+$application->addCommand(new \MahoCLI\Commands\IndexReindexProduct());
+
+$application->addCommand(new \MahoCLI\Commands\CronHistory());
+$application->addCommand(new \MahoCLI\Commands\CronList());
+$application->addCommand(new \MahoCLI\Commands\CronRun());
+
+$application->addCommand(new \MahoCLI\Commands\LogClean());
+$application->addCommand(new \MahoCLI\Commands\LogStatus());
+
+$application->addCommand(new \MahoCLI\Commands\MaintenanceEnable());
+$application->addCommand(new \MahoCLI\Commands\MaintenanceDisable());
+$application->addCommand(new \MahoCLI\Commands\MaintenanceStatus());
+
+$application->addCommand(new \MahoCLI\Commands\HealthCheck());
+$application->addCommand(new \MahoCLI\Commands\Install());
+$application->addCommand(new \MahoCLI\Commands\Migrate());
+$application->addCommand(new \MahoCLI\Commands\LegacyRenameMysql4Classes());
+
+$application->addCommand(new \MahoCLI\Commands\PhpstormMetadataGenerate());
+
+$application->addCommand(new \MahoCLI\Commands\Serve());
+$application->addCommand(new \MahoCLI\Commands\Shell());
+
+$application->addCommand(new \MahoCLI\Commands\SysCurrencies());
+$application->addCommand(new \MahoCLI\Commands\SysDirectoryRegionsImport());
+$application->addCommand(new \MahoCLI\Commands\SysEncryptionKeyRegenerate());
+$application->addCommand(new \MahoCLI\Commands\SysLocales());
+$application->addCommand(new \MahoCLI\Commands\SysTimezones());
+
+$application->addCommand(new \MahoCLI\Commands\ConfigGet());
+$application->addCommand(new \MahoCLI\Commands\ConfigSet());
+$application->addCommand(new \MahoCLI\Commands\ConfigDelete());
+
+$application->addCommand(new \MahoCLI\Commands\TranslationsMissing());
+$application->addCommand(new \MahoCLI\Commands\TranslationsUnused());
+
+$application->addCommand(new \MahoCLI\Commands\CreateCommand());
+
+$application->addCommand(new \MahoCLI\Commands\FrontendLayoutDebug());
+$application->addCommand(new \MahoCLI\Commands\FrontendThemeCreate());
+
+$discoverer = new CommandDiscoverer();
+$commands = $discoverer->discover(__DIR__ . '/vendor/*/*') + $discoverer->discover(__DIR__);
+foreach ($commands as $command) {
+    $application->addCommand($command);
+}
+
+$application->run();
