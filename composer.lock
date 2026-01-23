@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "147453a2dfb89d8dec6cb65442f92799",
+    "content-hash": "055978fc30775f0fbfb634103f4707c4",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -1102,6 +1102,113 @@
             "time": "2024-07-04T07:17:40+00:00"
         },
         {
+            "name": "maco-studios/openwire",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "modules/Maco_Openwire",
+                "reference": "03f0338420ec8233f05e51dee30b543bad73ec4f"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.48",
+                "ergebnis/license": "^2.7",
+                "friendsofphp/php-cs-fixer": "^3.92",
+                "pestphp/pest": "^4.3",
+                "phpmd/phpmd": "^2.15",
+                "phpstan/phpstan": "^2.1",
+                "rector/rector": "^2.3"
+            },
+            "type": "magento-module",
+            "extra": {
+                "composer-normalize": {
+                    "indent-size": 4,
+                    "indent-style": "space"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Maco_Openwire": "app/code/local/"
+                },
+                "classmap": [
+                    "app/code/local/"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "post-install-cmd": [
+                    "@auto"
+                ],
+                "post-update-cmd": [
+                    "@auto"
+                ],
+                "auto": [
+                    "if [ -d vendor/ergebnis/composer-normalize ];then composer normalize -q;fi"
+                ],
+                "cs:check": [
+                    "@php vendor/bin/php-cs-fixer fix --dry-run --diff"
+                ],
+                "cs:fix": [
+                    "@php vendor/bin/php-cs-fixer fix"
+                ],
+                "fix": [
+                    "@cs:fix",
+                    "@rector"
+                ],
+                "lint": [
+                    "@cs:check",
+                    "@stan",
+                    "@phpmd"
+                ],
+                "phpmd": [
+                    "@php -d error_reporting=E_ALL^E_DEPRECATED vendor/bin/phpmd app,tests text codesize,unusedcode,naming"
+                ],
+                "rector": [
+                    "@php vendor/bin/rector process"
+                ],
+                "stan": [
+                    "@php -d error_reporting=E_ALL^E_DEPRECATED vendor/bin/phpstan analyse app tests --memory-limit=2G"
+                ],
+                "test": [
+                    "@php vendor/bin/pest",
+                    "npm run test"
+                ],
+                "test:feature": [
+                    "@php vendor/bin/pest --testsuite=Feature"
+                ],
+                "test:integration": [
+                    "@php vendor/bin/pest --testsuite=Integration"
+                ],
+                "test:unit": [
+                    "@php vendor/bin/pest --testsuite=Unit"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "A Magento 1 module for building reactive components.",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "maco-studios/vuewire",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "modules/Maco_Vuewire",
+                "reference": "e7a8c74b9b648cafad12bf5a6ee64bfb8cf67a72"
+            },
+            "type": "magento-module",
+            "description": "Maco Vuewire package for Maco Studios",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mahocommerce/icons",
             "version": "1.0.2",
             "source": {
@@ -1133,12 +1240,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/MahoCommerce/maho.git",
-                "reference": "4e2f42e296ffaea118af12be3887cd2dc65380de"
+                "reference": "d6fda81b5cceb13d06b60debf745ffd75ec59901"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MahoCommerce/maho/zipball/4e2f42e296ffaea118af12be3887cd2dc65380de",
-                "reference": "4e2f42e296ffaea118af12be3887cd2dc65380de",
+                "url": "https://api.github.com/repos/MahoCommerce/maho/zipball/d6fda81b5cceb13d06b60debf745ffd75ec59901",
+                "reference": "d6fda81b5cceb13d06b60debf745ffd75ec59901",
                 "shasum": ""
             },
             "require": {
@@ -1282,7 +1389,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-23T13:31:27+00:00"
+            "time": "2026-01-23T18:48:59+00:00"
         },
         {
             "name": "mahocommerce/maho-composer-plugin",
@@ -5496,6 +5603,69 @@
             "time": "2024-04-12T12:12:48+00:00"
         },
         {
+            "name": "fakerphp/faker",
+            "version": "v1.24.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FakerPHP/Faker.git",
+                "reference": "e0ee18eb1e6dc3cda3ce9fd97e5a0689a88a64b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FakerPHP/Faker/zipball/e0ee18eb1e6dc3cda3ce9fd97e5a0689a88a64b5",
+                "reference": "e0ee18eb1e6dc3cda3ce9fd97e5a0689a88a64b5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0",
+                "psr/container": "^1.0 || ^2.0",
+                "symfony/deprecation-contracts": "^2.2 || ^3.0"
+            },
+            "conflict": {
+                "fzaninotto/faker": "*"
+            },
+            "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.4.1",
+                "doctrine/persistence": "^1.3 || ^2.0",
+                "ext-intl": "*",
+                "phpunit/phpunit": "^9.5.26",
+                "symfony/phpunit-bridge": "^5.4.16"
+            },
+            "suggest": {
+                "doctrine/orm": "Required to use Faker\\ORM\\Doctrine",
+                "ext-curl": "Required by Faker\\Provider\\Image to download images.",
+                "ext-dom": "Required by Faker\\Provider\\HtmlLorem for generating random HTML.",
+                "ext-iconv": "Required by Faker\\Provider\\ru_RU\\Text::realText() for generating real Russian text.",
+                "ext-mbstring": "Required for multibyte Unicode string functionality."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Faker\\": "src/Faker/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "Faker is a PHP library that generates fake data for you.",
+            "keywords": [
+                "data",
+                "faker",
+                "fixtures"
+            ],
+            "support": {
+                "issues": "https://github.com/FakerPHP/Faker/issues",
+                "source": "https://github.com/FakerPHP/Faker/tree/v1.24.1"
+            },
+            "time": "2024-11-21T13:46:39+00:00"
+        },
+        {
             "name": "fidry/cpu-core-counter",
             "version": "1.3.0",
             "source": {
@@ -9053,6 +9223,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "maco-studios/openwire": 20,
+        "maco-studios/vuewire": 20,
         "mahocommerce/maho": 20
     },
     "prefer-stable": true,

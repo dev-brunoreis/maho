@@ -1,5 +1,5 @@
 {
-    "_hash": "913fdbcd2cb5b0d6b112103c66ca036774d1d8f6c918e346dd45f0b04f871960",
+    "_hash": "f0bab4bb22d0fbb575750475119e507896c758ab0b133fc88a9ddc178dec486c",
     "patches": {
         "mahocommerce/maho": [
             {
@@ -77,6 +77,26 @@
                 "description": "Load .env early for CLI",
                 "url": "patches/0008-maho-cli-load-env.patch",
                 "sha256": "fb9fc7dacc3913661adfb3cf53446bbea6b72c6e51b02506d29b559a70a61179",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Detect test environment (skip global error handler)",
+                "url": "patches/0009-app-detect-test-env.patch",
+                "sha256": "f741f60f84841dbc3d88cd1ecec29f4275ac9e460c9742ef224478ec21dcd59c",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Fix Symfony Length deprecation (named args)",
+                "url": "patches/0010-symfony-validator-length-named-args.patch",
+                "sha256": "fa070ee4d7344054b81c7843ea471f2e36a8150e069bd4eb1db3ac6e6c3f0857",
                 "depth": 1,
                 "extra": {
                     "provenance": "root"

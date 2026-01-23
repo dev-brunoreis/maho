@@ -1,8 +1,8 @@
 diff --git a/app/code/core/Mage/Core/Helper/Data.php b/app/code/core/Mage/Core/Helper/Data.php
-index c328164..c65e9ce 100644
+index b9bf867..2a94a96 100644
 --- a/app/code/core/Mage/Core/Helper/Data.php
 +++ b/app/code/core/Mage/Core/Helper/Data.php
-@@ -1050,19 +1050,11 @@ class Mage_Core_Helper_Data extends Mage_Core_Helper_Abstract
+@@ -1052,15 +1052,10 @@ XML;
       */
      public function isValidLength(string $value, ?int $min = null, ?int $max = null): bool
      {
@@ -21,3 +21,4 @@ index c328164..c65e9ce 100644
 +        );
          return count($violations) === 0;
      }
+ 

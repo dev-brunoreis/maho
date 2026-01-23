@@ -4,5 +4,5 @@
 it('may welcome the user', function () {
     $page = visit(url());
     $page->screenshot();
-    $page->assertSee('Welcome');
+    $page->assertSee('Home');
 });
