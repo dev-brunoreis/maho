@@ -12,3 +12,8 @@
 */
 
 pest()->extend(Tests\TestCase::class)->in('Feature', 'Unit');
+
+function url(string $path = ''): string
+{
+    return $_ENV['MAHO_BASE_URL'] . $path;
+}
