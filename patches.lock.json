@@ -1,0 +1,87 @@
+{
+    "_hash": "913fdbcd2cb5b0d6b112103c66ca036774d1d8f6c918e346dd45f0b04f871960",
+    "patches": {
+        "mahocommerce/maho": [
+            {
+                "package": "mahocommerce/maho",
+                "description": "Add DB-backed install date service",
+                "url": "patches/0002-add-install-date-model.patch",
+                "sha256": "55b22ce72d2b14ee9646df49ae9aad46aee4e6d2aa107cd501e645a323de355b",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Update Mage::isInstalled() to use DB",
+                "url": "patches/0001-mage-is-installed-db-aware.patch",
+                "sha256": "570a66b6c7246741ed2ef0da31da8ca465622a56d79bc1fa6849efdce6b74ff3",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Update installer to persist install date to DB",
+                "url": "patches/0003-installer-persist-install-date-db.patch",
+                "sha256": "93fe25bcef6f1f8271f818425bc6509790f1ec167e70efb0812a3a3ebee9179d",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Load DB connection from MAHO_DB_* env (no local.xml)",
+                "url": "patches/0004-config-load-db-from-env.patch",
+                "sha256": "7919ca519fb50d3c33ef306583a6bccf9e930165c4471c3604ad4320a906c44f",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Make Mage::isInstalled() DB-only (no local.xml)",
+                "url": "patches/0005-mage-is-installed-db-only.patch",
+                "sha256": "a8b3c7b1b375d06c321a0f162e57c8526c14895d4fe91d5f3013abe62519b81e",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Installer generates .env; no local.xml writes",
+                "url": "patches/0006-installer-generate-env-no-localxml.patch",
+                "sha256": "d19555282a7a91846734250720b16e40676fea3481d8b99d466381e424ac7339",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Apply DB env overrides before cache lock",
+                "url": "patches/0007-config-apply-env-before-cache-lock.patch",
+                "sha256": "70896eae4ab0893bef9226126920cf675a1474df37ececcef109a574df564f5b",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Load .env early for CLI",
+                "url": "patches/0008-maho-cli-load-env.patch",
+                "sha256": "fb9fc7dacc3913661adfb3cf53446bbea6b72c6e51b02506d29b559a70a61179",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            }
+        ]
+    }
+}
