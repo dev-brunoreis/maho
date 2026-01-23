@@ -5,9 +5,15 @@
         "AFL-3.0"
     ],
     "type": "project",
+    "prefer-stable": true,
     "minimum-stability": "dev",
     "require": {
-        "mahocommerce/maho": "*"
+        "mahocommerce/maho": "dev-main"
+    },
+    "autoload": {
+        "files": [
+            "lib/sodium/bootstrap.php"
+        ]
     },
     "config": {
         "allow-plugins": {
