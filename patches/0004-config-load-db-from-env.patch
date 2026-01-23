@@ -1,0 +1,103 @@
+diff --git a/app/code/core/Mage/Core/Model/Config.php b/app/code/core/Mage/Core/Model/Config.php
+index 135229a..69133e1 100644
+--- a/app/code/core/Mage/Core/Model/Config.php
++++ b/app/code/core/Mage/Core/Model/Config.php
+@@ -225,6 +225,9 @@ class Mage_Core_Model_Config extends Mage_Core_Model_Config_Base
+         $this->setCacheId('config_global');
+         $this->_options         = new Mage_Core_Model_Config_Options($sourceData);
+         $this->_prototype       = new Mage_Core_Model_Config_Base();
++        // Always initialize to avoid typed-property access errors even when local.xml is not used
++        $this->_refLocalConfigObject = clone $this->_prototype;
++        $this->_refLocalConfigObject->loadString('<config/>');
+         $this->_cacheChecksum   = null;
+         parent::__construct($sourceData);
+     }
+@@ -313,7 +316,8 @@ class Mage_Core_Model_Config extends Mage_Core_Model_Config_Base
+         foreach (Maho::getInstalledPackages() as $package => $info) {
+             foreach (glob($info['path'] . '/app/etc/*.xml') as $file) {
+                 $basename = basename($file);
+-                if ($basename === 'local.xml' && $package !== 'root') {
++                // local.xml is deprecated: it must not be used for configuration anymore
++                if ($basename === 'local.xml') {
+                     continue;
+                 }
+                 $files[$basename] = $file;
+@@ -325,16 +329,74 @@ class Mage_Core_Model_Config extends Mage_Core_Model_Config_Base
+         foreach ($files as $basename => $file) {
+             $merge = clone $this->_prototype;
+             $merge->loadFile($file);
+-            if ($basename === 'local.xml') {
+-                $this->_isLocalConfigLoaded = true;
+-                $this->_refLocalConfigObject = $merge;
+-            }
+             $this->extend($merge);
+         }
+ 
++        $this->applyDbEnv();
++
+         return $this;
+     }
+ 
++    /**
++     * Apply database connection configuration from environment variables.
++     *
++     * This replaces the legacy local.xml DB bootstrap.
++     *
++     * Supported variables:
++     * - MAHO_DB_ENGINE: mysql|pgsql|sqlite
++     * - MAHO_DB_HOST
++     * - MAHO_DB_NAME
++     * - MAHO_DB_USER
++     * - MAHO_DB_PASS
++     * - MAHO_DB_PREFIX
++     * - MAHO_DB_INIT_STATEMENTS
++     */
++    protected function applyDbEnv(): void
++    {
++        $engine = $_ENV['MAHO_DB_ENGINE'] ?? $_SERVER['MAHO_DB_ENGINE'] ?? getenv('MAHO_DB_ENGINE') ?: null;
++        if (!$engine) {
++            return;
++        }
++
++        $engine = strtolower(trim((string) $engine));
++        $host = $_ENV['MAHO_DB_HOST'] ?? $_SERVER['MAHO_DB_HOST'] ?? getenv('MAHO_DB_HOST') ?: '';
++        $name = $_ENV['MAHO_DB_NAME'] ?? $_SERVER['MAHO_DB_NAME'] ?? getenv('MAHO_DB_NAME') ?: '';
++        $user = $_ENV['MAHO_DB_USER'] ?? $_SERVER['MAHO_DB_USER'] ?? getenv('MAHO_DB_USER') ?: '';
++        $pass = $_ENV['MAHO_DB_PASS'] ?? $_SERVER['MAHO_DB_PASS'] ?? getenv('MAHO_DB_PASS') ?: '';
++        $prefix = $_ENV['MAHO_DB_PREFIX'] ?? $_SERVER['MAHO_DB_PREFIX'] ?? getenv('MAHO_DB_PREFIX');
++        $initStatements = $_ENV['MAHO_DB_INIT_STATEMENTS'] ?? $_SERVER['MAHO_DB_INIT_STATEMENTS'] ?? getenv('MAHO_DB_INIT_STATEMENTS');
++
++        // Enable DB connection
++        $this->setNode('global/resources/default_setup/connection/engine', $engine);
++        $this->setNode('global/resources/default_setup/connection/active', '1');
++
++        if ($engine !== 'sqlite') {
++            if ($host !== '') {
++                $this->setNode('global/resources/default_setup/connection/host', (string) $host);
++            }
++            if ($user !== '') {
++                $this->setNode('global/resources/default_setup/connection/username', (string) $user);
++            }
++            // Password may be empty, but still set explicitly if provided
++            $this->setNode('global/resources/default_setup/connection/password', (string) $pass);
++        }
++
++        if ($name !== '') {
++            $this->setNode('global/resources/default_setup/connection/dbname', (string) $name);
++        }
++
++        if ($initStatements !== false && $initStatements !== null && $initStatements !== '') {
++            $this->setNode('global/resources/default_setup/connection/initStatements', (string) $initStatements);
++        }
++
++        if ($prefix !== false && $prefix !== null) {
++            $this->setNode('global/resources/db/table_prefix', (string) $prefix);
++        }
++
++        // Mark as "local config loaded" for legacy guards (DB connection available)
++        $this->_isLocalConfigLoaded = true;
++    }
++
+     /**
+      * Load cached modules configuration
+      *

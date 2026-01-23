@@ -1,0 +1,37 @@
+diff --git a/app/Mage.php b/app/Mage.php
+index 150c21c..0f047cc 100644
+--- a/app/Mage.php
++++ b/app/Mage.php
+@@ -729,6 +729,23 @@ final class Mage
+         if (self::$_isInstalled === null) {
+             self::setRoot();
+ 
++            self::$_isInstalled = false;
++
++            // Try to check install date from database first
++            try {
++                $config = self::getConfig();
++                if ($config && $config->isLocalConfigLoaded()) {
++                    $installDate = Mage::getModel('core/install_date');
++                    if ($installDate && $installDate->exists()) {
++                        self::$_isInstalled = true;
++                        return self::$_isInstalled;
++                    }
++                }
++            } catch (Exception $e) {
++                // If DB check fails, continue to check local.xml as fallback (for backward compatibility during migration)
++            }
++
++            // Fallback: check local.xml for backward compatibility (will be removed in future)
+             if (is_string($options)) {
+                 $options = ['etc_dir' => $options];
+             }
+@@ -738,8 +755,6 @@ final class Mage
+             }
+             $localConfigFile = $etcDir . DS . 'local.xml';
+ 
+-            self::$_isInstalled = false;
+-
+             $localXmlContent = $_ENV['MAHO_LOCAL_XML'] ?? $_SERVER['MAHO_LOCAL_XML'] ?? null;
+             if (!empty($localXmlContent) && !file_exists($localConfigFile)) {
+                 @mkdir($etcDir, 0750, true);

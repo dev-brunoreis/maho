@@ -1,0 +1,118 @@
+diff --git a/app/code/core/Mage/Core/Model/Install/Date.php b/app/code/core/Mage/Core/Model/Install/Date.php
+new file mode 100644
+index 0000000..331082c
+--- /dev/null
++++ b/app/code/core/Mage/Core/Model/Install/Date.php
+@@ -0,0 +1,112 @@
++<?php
++
++/**
++ * Maho
++ *
++ * @package    Mage_Core
++ * @copyright  Copyright (c) 2024-2026 Maho (https://mahocommerce.com)
++ * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
++ */
++
++class Mage_Core_Model_Install_Date
++{
++    public const CONFIG_PATH = 'global/install/date';
++
++    /**
++     * Check if install date exists in database
++     *
++     * @return bool
++     */
++    public function exists(): bool
++    {
++        try {
++            $config = Mage::getConfig();
++            if (!$config || !$config->isLocalConfigLoaded()) {
++                return false;
++            }
++
++            $resource = $config->getResourceModel();
++            if (!$resource) {
++                return false;
++            }
++
++            $value = $resource->getConfig(self::CONFIG_PATH, 'default', 0);
++            return $value !== false && !empty($value);
++        } catch (Exception $e) {
++            return false;
++        }
++    }
++
++    /**
++     * Get install date from database
++     *
++     * @return string|false ISO-8601 date string or false if not found
++     */
++    public function get()
++    {
++        try {
++            $config = Mage::getConfig();
++            if (!$config || !$config->isLocalConfigLoaded()) {
++                return false;
++            }
++
++            $resource = $config->getResourceModel();
++            if (!$resource) {
++                return false;
++            }
++
++            $value = $resource->getConfig(self::CONFIG_PATH, 'default', 0);
++            if ($value === false || empty($value)) {
++                return false;
++            }
++
++            // Validate it's a valid date
++            $timestamp = strtotime($value);
++            if ($timestamp === false) {
++                return false;
++            }
++
++            return date('c', $timestamp); // ISO-8601 format
++        } catch (Exception $e) {
++            return false;
++        }
++    }
++
++    /**
++     * Save install date to database
++     *
++     * @param string|DateTimeInterface|null $date Date string or DateTime object. If null, uses current time
++     * @return bool
++     */
++    public function save($date = null): bool
++    {
++        try {
++            $config = Mage::getConfig();
++            if (!$config || !$config->isLocalConfigLoaded()) {
++                return false;
++            }
++
++            $resource = $config->getResourceModel();
++            if (!$resource) {
++                return false;
++            }
++
++            if ($date === null) {
++                $dateString = date('c'); // ISO-8601 format
++            } elseif ($date instanceof DateTimeInterface) {
++                $dateString = $date->format('c');
++            } else {
++                $timestamp = strtotime((string) $date);
++                if ($timestamp === false) {
++                    return false;
++                }
++                $dateString = date('c', $timestamp);
++            }
++
++            $resource->saveConfig(self::CONFIG_PATH, $dateString, 'default', 0);
++            return true;
++        } catch (Exception $e) {
++            return false;
++        }
++    }
++}

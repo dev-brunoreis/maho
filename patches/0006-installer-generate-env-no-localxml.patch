@@ -1,0 +1,137 @@
+diff --git a/app/code/core/Mage/Install/Model/Installer/Config.php b/app/code/core/Mage/Install/Model/Installer/Config.php
+index a761f5c..f537745 100644
+--- a/app/code/core/Mage/Install/Model/Installer/Config.php
++++ b/app/code/core/Mage/Install/Model/Installer/Config.php
+@@ -67,31 +67,85 @@ class Mage_Install_Model_Installer_Config extends Mage_Install_Model_Installer_A
+             }
+         }
+ 
+-        $data['date']   = self::TMP_INSTALL_DATE_VALUE;
+-        $data['key']    = self::TMP_ENCRYPT_KEY_VALUE;
+         $data['var_dir'] = $data['root_dir'] . '/var';
+ 
+         $data['use_script_name'] = isset($data['use_script_name']) ? 'true' : 'false';
+ 
+         $this->_getInstaller()->getDataModel()->setConfigData($data);
+ 
+-        $template = file_get_contents(Maho::findFile(Mage::getBaseDir('etc') . DS . 'local.xml.template'));
+-        foreach ($data as $index => $value) {
+-            $template = str_replace('{{' . $index . '}}', '<![CDATA[' . $value . ']]>', $template);
++        // Persist DB connection credentials via .env (local.xml is deprecated).
++        $this->writeEnvFile($data);
++        $this->applyEnvToCurrentProcess($data);
++    }
++
++    protected function getEnvFilePath(): string
++    {
++        if (defined('MAHO_ROOT_DIR')) {
++            return rtrim((string) MAHO_ROOT_DIR, '/\\') . '/.env';
+         }
++        return rtrim((string) getcwd(), '/\\') . '/.env';
++    }
+ 
+-        $localXmlDir = dirname($this->_localConfigFile);
+-        if (!file_exists($localXmlDir)) {
+-            if (!mkdir($localXmlDir, 0777, true)) {
+-                Mage::throwException("Error creating $localXmlDir folder.");
+-            }
++    /**
++     * @param array<string, mixed> $data
++     */
++    protected function writeEnvFile(array $data): void
++    {
++        $envPath = $this->getEnvFilePath();
++        $dir = dirname($envPath);
++        if (!is_dir($dir) && !mkdir($dir, 0750, true)) {
++            Mage::throwException("Error creating $dir folder.");
+         }
+-        if (!is_writable($localXmlDir)) {
+-            Mage::throwException("$localXmlDir is not writable.");
++        if (!is_writable($dir)) {
++            Mage::throwException("$dir is not writable.");
+         }
+ 
+-        file_put_contents($this->_localConfigFile, $template);
+-        chmod($this->_localConfigFile, 0777);
++        $vars = $this->buildEnvVars($data);
++        $lines = [];
++        foreach ($vars as $key => $value) {
++            $lines[] = $key . '=' . $this->dotenvQuote($value);
++        }
++        $contents = implode("\n", $lines) . "\n";
++
++        if (file_put_contents($envPath, $contents, LOCK_EX) === false) {
++            Mage::throwException("Error writing $envPath.");
++        }
++        @chmod($envPath, 0640);
++    }
++
++    /**
++     * @param array<string, mixed> $data
++     * @return array<string, string>
++     */
++    protected function buildEnvVars(array $data): array
++    {
++        return [
++            'MAHO_DB_ENGINE' => (string) ($data['db_engine'] ?? 'mysql'),
++            'MAHO_DB_HOST'   => (string) ($data['db_host'] ?? ''),
++            'MAHO_DB_NAME'   => (string) ($data['db_name'] ?? ''),
++            'MAHO_DB_USER'   => (string) ($data['db_user'] ?? ''),
++            'MAHO_DB_PASS'   => (string) ($data['db_pass'] ?? ''),
++            'MAHO_DB_PREFIX' => (string) ($data['db_prefix'] ?? ''),
++        ];
++    }
++
++    protected function dotenvQuote(string $value): string
++    {
++        // Minimal safe quoting for dotenv: always quote.
++        $escaped = str_replace(["\\", "\"", "\n", "\r"], ["\\\\", "\\\"", "\\n", "\\r"], $value);
++        return '"' . $escaped . '"';
++    }
++
++    /**
++     * @param array<string, mixed> $data
++     */
++    protected function applyEnvToCurrentProcess(array $data): void
++    {
++        foreach ($this->buildEnvVars($data) as $key => $value) {
++            $_ENV[$key] = $value;
++            $_SERVER[$key] = $value;
++            @putenv($key . '=' . $value);
++        }
+     }
+ 
+     public function getFormData(): Maho\DataObject
+@@ -179,23 +233,21 @@ class Mage_Install_Model_Installer_Config extends Mage_Install_Model_Installer_A
+             Mage::logException($e);
+         }
+ 
+-        // Also update local.xml if it exists (for backward compatibility)
+-        if (file_exists($this->_localConfigFile)) {
+-            $localXml = file_get_contents($this->_localConfigFile);
+-            $localXml = str_replace(self::TMP_INSTALL_DATE_VALUE, date('r', $stamp ?: time()), $localXml);
+-            file_put_contents($this->_localConfigFile, $localXml);
+-        }
+-
+         return $this;
+     }
+ 
+     public function replaceTmpEncryptKey(): self
+     {
+         $key = Mage::generateEncryptionKeyAsHex();
+-        $localXml = file_get_contents($this->_localConfigFile);
+-        $localXml = str_replace(self::TMP_ENCRYPT_KEY_VALUE, $key, $localXml);
+-        $localXml = str_replace('{{key_date}}', date(Mage_Core_Model_Locale::DATE_FORMAT), $localXml);
+-        file_put_contents($this->_localConfigFile, $localXml);
++        try {
++            $config = Mage::getConfig();
++            if ($config && $config->isLocalConfigLoaded()) {
++                $resource = $config->getResourceModel();
++                $resource->saveConfig('global/crypt/key', $key, 'default', 0);
++            }
++        } catch (Exception $e) {
++            Mage::logException($e);
++        }
+ 
+         return $this;
+     }

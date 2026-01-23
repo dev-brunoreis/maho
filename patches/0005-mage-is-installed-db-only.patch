@@ -1,0 +1,51 @@
+diff --git a/app/Mage.php b/app/Mage.php
+index 0f047cc..1e7ef12 100644
+--- a/app/Mage.php
++++ b/app/Mage.php
+@@ -731,7 +731,8 @@ final class Mage
+ 
+             self::$_isInstalled = false;
+ 
+-            // Try to check install date from database first
++            // Determine installation status from DB (core_config_data: global/install/date).
++            // local.xml and .env install-date are not used.
+             try {
+                 $config = self::getConfig();
+                 if ($config && $config->isLocalConfigLoaded()) {
+@@ -742,35 +743,7 @@ final class Mage
+                     }
+                 }
+             } catch (Exception $e) {
+-                // If DB check fails, continue to check local.xml as fallback (for backward compatibility during migration)
+-            }
+-
+-            // Fallback: check local.xml for backward compatibility (will be removed in future)
+-            if (is_string($options)) {
+-                $options = ['etc_dir' => $options];
+-            }
+-            $etcDir = self::getRoot() . DS . 'app' . DS . 'etc';
+-            if (!empty($options['etc_dir'])) {
+-                $etcDir = $options['etc_dir'];
+-            }
+-            $localConfigFile = $etcDir . DS . 'local.xml';
+-
+-            $localXmlContent = $_ENV['MAHO_LOCAL_XML'] ?? $_SERVER['MAHO_LOCAL_XML'] ?? null;
+-            if (!empty($localXmlContent) && !file_exists($localConfigFile)) {
+-                @mkdir($etcDir, 0750, true);
+-                $result = file_put_contents($localConfigFile, $localXmlContent, LOCK_EX);
+-                if ($result === false) {
+-                    throw new Exception("Failed to write $localConfigFile.");
+-                }
+-
+-                chmod($localConfigFile, 0640);
+-            }
+-
+-            if ($localConfig = @simplexml_load_file($localConfigFile)) {
+-                date_default_timezone_set(Mage_Core_Model_Locale::DEFAULT_TIMEZONE);
+-                if (($date = $localConfig->global->install->date) && strtotime((string) $date)) {
+-                    self::$_isInstalled = true;
+-                }
++                // No-op: treat as not installed when DB is not reachable
+             }
+         }
+         return self::$_isInstalled;

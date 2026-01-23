@@ -8,7 +8,8 @@
     "prefer-stable": true,
     "minimum-stability": "dev",
     "require": {
-        "mahocommerce/maho": "dev-main"
+        "mahocommerce/maho": "dev-main",
+        "cweagans/composer-patches": "^2.0"
     },
     "autoload": {
         "files": [
@@ -18,7 +19,22 @@
     "config": {
         "allow-plugins": {
             "magento-hackathon/magento-composer-installer": false,
-            "mahocommerce/maho-composer-plugin": true
+            "mahocommerce/maho-composer-plugin": true,
+            "cweagans/composer-patches": true
+        }
+    },
+    "extra": {
+        "patches": {
+            "mahocommerce/maho": {
+                "Add DB-backed install date service": "patches/0002-add-install-date-model.patch",
+                "Update Mage::isInstalled() to use DB": "patches/0001-mage-is-installed-db-aware.patch",
+                "Update installer to persist install date to DB": "patches/0003-installer-persist-install-date-db.patch",
+                "Load DB connection from MAHO_DB_* env (no local.xml)": "patches/0004-config-load-db-from-env.patch",
+                "Make Mage::isInstalled() DB-only (no local.xml)": "patches/0005-mage-is-installed-db-only.patch",
+                "Installer generates .env; no local.xml writes": "patches/0006-installer-generate-env-no-localxml.patch",
+                "Apply DB env overrides before cache lock": "patches/0007-config-apply-env-before-cache-lock.patch",
+                "Load .env early for CLI": "patches/0008-maho-cli-load-env.patch"
+            }
         }
     }
 }

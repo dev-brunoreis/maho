@@ -1,0 +1,36 @@
+diff --git a/app/code/core/Mage/Core/Model/Config.php b/app/code/core/Mage/Core/Model/Config.php
+index 69133e1..a26c121 100644
+--- a/app/code/core/Mage/Core/Model/Config.php
++++ b/app/code/core/Mage/Core/Model/Config.php
+@@ -281,6 +281,9 @@ class Mage_Core_Model_Config extends Mage_Core_Model_Config_Base
+         $this->_cacheLoadedSections = [];
+         $this->setOptions($options);
+         $this->loadBase();
++        // Ensure env DB overrides are applied before anything can open a DB connection
++        // (e.g. config cache lock / cache option reads).
++        $this->applyDbEnv();
+ 
+         if (!$this->loadModulesCache()) {
+             try {
+@@ -382,10 +385,20 @@ class Mage_Core_Model_Config extends Mage_Core_Model_Config_Base
+         }
+ 
+         if ($name !== '') {
++            // For SQLite, normalize relative db path to <base>/var/db/<name> to match installer behavior.
++            if ($engine === 'sqlite' && $name !== ':memory:' && !str_starts_with((string) $name, '/')) {
++                $baseDir = defined('MAHO_ROOT_DIR')
++                    ? (string) MAHO_ROOT_DIR
++                    : (defined('BP') ? (string) BP : (string) getcwd());
++                $name = rtrim($baseDir, '/\\') . DS . 'var' . DS . 'db' . DS . $name;
++            }
+             $this->setNode('global/resources/default_setup/connection/dbname', (string) $name);
+         }
+ 
+-        if ($initStatements !== false && $initStatements !== null && $initStatements !== '') {
++        // Avoid invalid SQL (e.g. `SET NAMES utf8`) on SQLite: force empty initStatements.
++        if ($engine === 'sqlite') {
++            $this->setNode('global/resources/default_setup/connection/initStatements', '');
++        } elseif ($initStatements !== false && $initStatements !== null && $initStatements !== '') {
+             $this->setNode('global/resources/default_setup/connection/initStatements', (string) $initStatements);
+         }
+ 

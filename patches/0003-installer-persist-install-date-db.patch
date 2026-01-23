@@ -1,0 +1,35 @@
+diff --git a/app/code/core/Mage/Install/Model/Installer/Config.php b/app/code/core/Mage/Install/Model/Installer/Config.php
+index 7d889ad..a761f5c 100644
+--- a/app/code/core/Mage/Install/Model/Installer/Config.php
++++ b/app/code/core/Mage/Install/Model/Installer/Config.php
+@@ -165,10 +165,26 @@ class Mage_Install_Model_Installer_Config extends Mage_Install_Model_Installer_A
+ 
+     public function replaceTmpInstallDate(?string $date = null): self
+     {
+-        $stamp    = strtotime((string) $date);
+-        $localXml = file_get_contents($this->_localConfigFile);
+-        $localXml = str_replace(self::TMP_INSTALL_DATE_VALUE, date('r', $stamp ?: time()), $localXml);
+-        file_put_contents($this->_localConfigFile, $localXml);
++        $stamp = strtotime((string) $date);
++        $installDate = date('c', $stamp ?: time()); // ISO-8601 format
++
++        // Save install date to database
++        try {
++            $installDateModel = Mage::getModel('core/install_date');
++            if ($installDateModel) {
++                $installDateModel->save($installDate);
++            }
++        } catch (Exception $e) {
++            // Log error but continue
++            Mage::logException($e);
++        }
++
++        // Also update local.xml if it exists (for backward compatibility)
++        if (file_exists($this->_localConfigFile)) {
++            $localXml = file_get_contents($this->_localConfigFile);
++            $localXml = str_replace(self::TMP_INSTALL_DATE_VALUE, date('r', $stamp ?: time()), $localXml);
++            file_put_contents($this->_localConfigFile, $localXml);
++        }
+ 
+         return $this;
+     }
