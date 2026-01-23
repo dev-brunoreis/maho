@@ -21,6 +21,12 @@
             "Tests\\": "tests/"
         }
     },
+    "repositories": {
+        "modules": {
+            "type": "path",
+            "url": "modules/*"
+        }
+    },
     "config": {
         "allow-plugins": {
             "magento-hackathon/magento-composer-installer": false,
