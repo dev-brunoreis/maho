@@ -39,7 +39,9 @@
                 "Make Mage::isInstalled() DB-only (no local.xml)": "patches/0005-mage-is-installed-db-only.patch",
                 "Installer generates .env; no local.xml writes": "patches/0006-installer-generate-env-no-localxml.patch",
                 "Apply DB env overrides before cache lock": "patches/0007-config-apply-env-before-cache-lock.patch",
-                "Load .env early for CLI": "patches/0008-maho-cli-load-env.patch"
+                "Load .env early for CLI": "patches/0008-maho-cli-load-env.patch",
+                "Detect test environment (skip global error handler)": "patches/0009-app-detect-test-env.patch",
+                "Fix Symfony Length deprecation (named args)": "patches/0010-symfony-validator-length-named-args.patch"
             }
         }
     },

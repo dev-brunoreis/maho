@@ -1,0 +1,46 @@
+diff --git a/app/code/core/Mage/Core/Model/App.php b/app/code/core/Mage/Core/Model/App.php
+index 4d4ff17..a2af34d 100644
+--- a/app/code/core/Mage/Core/Model/App.php
++++ b/app/code/core/Mage/Core/Model/App.php
+@@ -370,8 +370,44 @@ class Mage_Core_Model_App
+      */
+     protected function _initEnvironment()
+     {
+-        $this->setErrorHandler(self::DEFAULT_ERROR_HANDLER);
++        // During tests (Pest/PHPUnit), avoid installing a global error handler that can leak
++        // across test boundaries and make tests "risky".
++        if (!$this->isTestEnvironment()) {
++            $this->setErrorHandler(self::DEFAULT_ERROR_HANDLER);
++        }
+         date_default_timezone_set(Mage_Core_Model_Locale::DEFAULT_TIMEZONE);
+         return $this;
+     }
++
++    /**
++     * Detect whether the application is running under a test runner.
++     */
++    public function isTestEnvironment(): bool
++    {
++        // PHPUnit sets PHPUNIT_COMPOSER_INSTALL when invoked via Composer.
++        if (defined('PHPUNIT_COMPOSER_INSTALL') || defined('__PHPUNIT_PHAR__')) {
++            return true;
++        }
++
++        // Common env flags (optional).
++        $env = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? getenv('APP_ENV') ?: '';
++        $mahoEnv = $_ENV['MAHO_ENV'] ?? $_SERVER['MAHO_ENV'] ?? getenv('MAHO_ENV') ?: '';
++        if (is_string($env) && strtolower($env) === 'testing') {
++            return true;
++        }
++        if (is_string($mahoEnv) && strtolower($mahoEnv) === 'testing') {
++            return true;
++        }
++
++        // Heuristic: test runners usually invoke pest/phpunit binaries.
++        $argv0 = $_SERVER['argv'][0] ?? '';
++        if (is_string($argv0) && ($argv0 !== '') && (str_contains($argv0, 'pest') || str_contains($argv0, 'phpunit'))) {
++            return true;
++        }
++
++        return false;
++    }
