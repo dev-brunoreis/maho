@@ -41,7 +41,8 @@
                 "Apply DB env overrides before cache lock": "patches/0007-config-apply-env-before-cache-lock.patch",
                 "Load .env early for CLI": "patches/0008-maho-cli-load-env.patch",
                 "Detect test environment (skip global error handler)": "patches/0009-app-detect-test-env.patch",
-                "Fix Symfony Length deprecation (named args)": "patches/0010-symfony-validator-length-named-args.patch"
+                "Fix Symfony Length deprecation (named args)": "patches/0010-symfony-validator-length-named-args.patch",
+                "Serve binds 0.0.0.0 in Docker": "patches/0011-cli-serve-bind-all-interfaces.patch"
             }
         }
     },

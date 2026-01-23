@@ -1,0 +1,190 @@
+services:
+  traefik:
+    image: "traefik:2.11"
+    restart: always
+    security_opt:
+      - "no-new-privileges:true"
+    ports:
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    command: "--providers.docker=true --providers.docker.exposedbydefault=false --api.insecure=true --entrypoints.web.address=:80"
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.priority=100
+    networks:
+      - maho
+  dnsmasq:
+    image: wardenenv/dnsmasq
+    ports:
+      - "127.0.0.1:53:53/udp"
+    environment:
+      WARDEN_DNSMASQ_CONF: "#dnsmasq config, for a complete example, see:\n#  http://oss.segetech.com/intra/srv/dnsmasq.conf\n\n#log all dns queries (enable as-needed for debugging purposes)\n# log-queries\n\n#dont use hosts nameservers\nno-resolv\n\n#use cloudflare as default nameservers, prefer 1^4\nserver=${WARDEN_DNSMASQ_NS1:-1.0.0.1}\nserver=${WARDEN_DNSMASQ_NS2:-1.1.1.1}\nstrict-order\n\n#explicitly define host-ip mappings\naddress=/.test/127.0.0.1\n${WARDEN_DNSMASQ_CONF_ADDITIONAL:-}"
+    entrypoint:
+      - /bin/sh
+      - "-c"
+      - ' echo "$$WARDEN_DNSMASQ_CONF" > /etc/dnsmasq.conf; webproc --configuration-file /etc/dnsmasq.conf -- dnsmasq --no-daemon; '
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dnsmasq.tls=true
+      - "traefik.http.routers.dnsmasq.rule=Host(`dnsmasq.${WARDEN_SERVICE_DOMAIN:-warden.test}`)"
+      - traefik.http.services.dnsmasq.loadbalancer.server.port=8080
+      - traefik.http.routers.dnsmasq.priority=100
+    restart: "${WARDEN_RESTART_POLICY:-always}"
+  maho:
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.laravel.rule=HostRegexp(`{subhost:[a-zA-Z0-9-]+}.${DOMAIN}`, `${DOMAIN}`)"
+      - traefik.http.routers.laravel.service=laravel
+      - traefik.http.services.laravel.loadbalancer.server.port=80
+      - traefik.http.routers.laravel.priority=1
+      # Allow access via plain http://localhost (without :8000)
+      - "traefik.http.routers.laravel_localhost.rule=Host(`localhost`)"
+      - traefik.http.routers.laravel_localhost.service=laravel
+      - traefik.http.routers.laravel_localhost.priority=90
+    build:
+      context: ./.docker/php/8.5
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: "${WWWGROUP:-1000}"
+        MYSQL_CLIENT: mariadb-client
+    image: maho-8.5/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:80"
+      - "${VITE_PORT:-5173}:${VITE_PORT:-5173}"
+    environment:
+      WWWUSER: "${WWWUSER:-1000}"
+      LARAVEL_maho: 1
+      XDEBUG_MODE: "${maho_XDEBUG_MODE:-off}"
+      XDEBUG_CONFIG: "${maho_XDEBUG_CONFIG:-client_host=host.docker.internal}"
+      IGNITION_LOCAL_SITES_PATH: "${PWD}"
+    volumes:
+      - ".:/var/www/html"
+    networks:
+      - maho
+    depends_on:
+      - traefik
+      - redis
+      - mailpit
+      - mariadb
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - "-f"
+        - "http://localhost:80/up"
+      retries: 3
+      timeout: 10s
+      interval: 30s
+      start_period: 40s
+  adminer:
+    image: "adminer:5"
+    environment:
+      ADMINER_DEFAULT_SERVER: "${MAHO_DB_ENGINE:-mysql}"
+      ADMINER_DEFAULT_USERNAME: "${MAHO_DB_USER}"
+      ADMINER_DEFAULT_PASSWORD: "${MAHO_DB_PASS}"
+      ADMINER_DEFAULT_DB: "${MAHO_DB_NAME}"
+    networks:
+      - maho
+    depends_on:
+      - mariadb
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.adminer.rule=Host(`adminer.${DOMAIN}`)"
+      - traefik.http.routers.adminer.service=adminer
+      - traefik.http.services.adminer.loadbalancer.server.port=8080
+      - traefik.http.routers.adminer.priority=100
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - "--no-verbose"
+        - "--tries=1"
+        - "--spider"
+        - "http://127.0.0.1:8080"
+      retries: 3
+      timeout: 5s
+      interval: 30s
+      start_period: 10s
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "${FORWARD_REDIS_PORT:-6379}:6379"
+    volumes:
+      - "maho-redis:/data"
+    networks:
+      - maho
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      retries: 3
+      timeout: 5s
+  mailpit:
+    image: "axllent/mailpit:latest"
+    ports:
+      - "${FORWARD_MAILPIT_PORT:-1025}:1025"
+      - "${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025"
+    networks:
+      - maho
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.mailpit.rule=Host(`mailpit.${DOMAIN}`)"
+      - traefik.http.routers.mailpit.service=mailpit
+      - traefik.http.services.mailpit.loadbalancer.server.port=8025
+      - traefik.http.routers.mailpit.priority=100
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - "--no-verbose"
+        - "--tries=1"
+        - "--spider"
+        - "http://127.0.0.1:8025"
+      retries: 3
+      timeout: 5s
+      interval: 30s
+      start_period: 10s
+  mariadb:
+    image: "mariadb:11"
+    ports:
+      - "${MAHO_DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MAHO_DB_PASS}"
+      MYSQL_ROOT_HOST: "${MAHO_DB_HOST}"
+      MYSQL_DATABASE: "${MAHO_DB_NAME}"
+      MYSQL_USER: "${MAHO_DB_USER}"
+      MYSQL_PASSWORD: "${MAHO_DB_PASS}"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - "maho-mariadb:/var/lib/mysql"
+    networks:
+      - maho
+    healthcheck:
+      test:
+        - CMD
+        - healthcheck.sh
+        - "--connect"
+        - "--innodb_initialized"
+      retries: 3
+      timeout: 5s
+networks:
+  maho:
+    driver: bridge
+volumes:
+  maho-redis:
+    driver: local
+  maho-elasticsearch:
+    driver: local
+  maho-minio:
+    driver: local
+  maho-rabbitmq:
+    driver: local
+  maho-mariadb:
+    driver: local
