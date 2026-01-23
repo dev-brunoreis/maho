@@ -1,21 +1,19 @@
 diff --git a/app/code/core/Mage/Core/Model/App.php b/app/code/core/Mage/Core/Model/App.php
-index 4d4ff17..a2af34d 100644
+index 814efc0..e04c2f3 100644
 --- a/app/code/core/Mage/Core/Model/App.php
 +++ b/app/code/core/Mage/Core/Model/App.php
-@@ -370,8 +370,44 @@ class Mage_Core_Model_App
+@@ -371,11 +371,42 @@ class Mage_Core_Model_App
       */
      protected function _initEnvironment()
      {
 -        $this->setErrorHandler(self::DEFAULT_ERROR_HANDLER);
-+        // During tests (Pest/PHPUnit), avoid installing a global error handler that can leak
-+        // across test boundaries and make tests "risky".
 +        if (!$this->isTestEnvironment()) {
 +            $this->setErrorHandler(self::DEFAULT_ERROR_HANDLER);
 +        }
          date_default_timezone_set(Mage_Core_Model_Locale::DEFAULT_TIMEZONE);
          return $this;
      }
-+
+ 
 +    /**
 +     * Detect whether the application is running under a test runner.
 +     */
@@ -44,3 +42,7 @@ index 4d4ff17..a2af34d 100644
 +
 +        return false;
 +    }
++
+     /**
+      * Initialize base system configuration (local.xml and config.xml files).
+      * Base configuration provide ability initialize DB connection and cache backend

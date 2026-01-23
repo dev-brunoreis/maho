@@ -9,7 +9,9 @@
     "minimum-stability": "dev",
     "require": {
         "mahocommerce/maho": "dev-main",
-        "cweagans/composer-patches": "^2.0"
+        "cweagans/composer-patches": "^2.0",
+        "maco-studios/openwire": "dev-main",
+        "maco-studios/vuewire": "dev-main"
     },
     "autoload": {
         "files": [
@@ -54,6 +56,7 @@
     },
     "require-dev": {
         "pestphp/pest": "^4.3",
-        "pestphp/pest-plugin-browser": "^4.2"
+        "pestphp/pest-plugin-browser": "^4.2",
+        "fakerphp/faker": "^1.24"
     }
 }
