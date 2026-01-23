@@ -15,4 +15,10 @@
             <directory>src</directory>
         </include>
     </source>
+    <php>
+        <env name="MAHO_DB_ENGINE" value="sqlite"/>
+        <env name="MAHO_DB_NAME" value=":memory:"/>
+        <env name="MAHO_DB_PREFIX" value=""/>
+        <env name="MAHO_DB_INIT_STATEMENTS" value=""/>
+    </php>
 </phpunit>
