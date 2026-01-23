@@ -16,11 +16,17 @@
             "lib/sodium/bootstrap.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "config": {
         "allow-plugins": {
             "magento-hackathon/magento-composer-installer": false,
             "mahocommerce/maho-composer-plugin": true,
-            "cweagans/composer-patches": true
+            "cweagans/composer-patches": true,
+            "pestphp/pest-plugin": true
         }
     },
     "extra": {
@@ -36,5 +42,9 @@
                 "Load .env early for CLI": "patches/0008-maho-cli-load-env.patch"
             }
         }
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.3",
+        "pestphp/pest-plugin-browser": "^4.2"
     }
 }
