@@ -12,8 +12,8 @@ services:
     command: "--providers.docker=true --providers.docker.exposedbydefault=false --api.insecure=true --entrypoints.web.address=:80"
     labels:
       - traefik.enable=true
-      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
-      - traefik.http.routers.traefik.service=api@internal
+      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN:-maho.test}`)"
+      - traefik.http.routers.traefik.service=api@internal"
       - traefik.http.routers.traefik.priority=100
     networks:
       - maho
@@ -37,7 +37,7 @@ services:
   maho:
     labels:
       - traefik.enable=true
-      - "traefik.http.routers.laravel.rule=HostRegexp(`{subhost:[a-zA-Z0-9-]+}.${DOMAIN}`, `${DOMAIN}`)"
+      - "traefik.http.routers.laravel.rule=HostRegexp(`{subhost:[a-zA-Z0-9-]+}.${DOMAIN:-maho.test}`, `${DOMAIN:-maho.test}`)"
       - traefik.http.routers.laravel.service=laravel
       - traefik.http.services.laravel.loadbalancer.server.port=80
       - traefik.http.routers.laravel.priority=1
@@ -54,6 +54,7 @@ services:
     image: maho-8.5/app
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      - "${DOMAIN:-maho.test}:127.0.0.1"
     ports:
       - "8000:80"
       - "${VITE_PORT:-5173}:${VITE_PORT:-5173}"
@@ -95,7 +96,7 @@ services:
       - mariadb
     labels:
       - traefik.enable=true
-      - "traefik.http.routers.adminer.rule=Host(`adminer.${DOMAIN}`)"
+      - "traefik.http.routers.adminer.rule=Host(`adminer.${DOMAIN:-maho.test}`)"
       - traefik.http.routers.adminer.service=adminer
       - traefik.http.services.adminer.loadbalancer.server.port=8080
       - traefik.http.routers.adminer.priority=100
@@ -135,7 +136,7 @@ services:
       - maho
     labels:
       - traefik.enable=true
-      - "traefik.http.routers.mailpit.rule=Host(`mailpit.${DOMAIN}`)"
+      - "traefik.http.routers.mailpit.rule=Host(`mailpit.${DOMAIN:-maho.test}`)"
       - traefik.http.routers.mailpit.service=mailpit
       - traefik.http.services.mailpit.loadbalancer.server.port=8025
       - traefik.http.routers.mailpit.priority=100
