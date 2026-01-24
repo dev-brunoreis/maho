@@ -11,6 +11,7 @@ if (!extension_loaded('sodium')) {
     if (!defined('SODIUM_CRYPTO_SECRETBOX_BOXZEROBYTES')) {
         define('SODIUM_CRYPTO_SECRETBOX_BOXZEROBYTES', 16);
     }
+    // sodium_crypto_secretbox(): Argument #3 ($key) must be SODIUM_CRYPTO_SECRETBOX_KEYBYTES bytes long
 
     /**
      * Re create the sodium extension functions with native PHP code (without sodium extension)

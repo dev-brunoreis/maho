@@ -11,11 +11,13 @@
         "mahocommerce/maho": "dev-main",
         "cweagans/composer-patches": "^2.0",
         "maco-studios/openwire": "dev-main",
-        "maco-studios/vuewire": "dev-main"
+        "maco-studios/vuewire": "dev-main",
+        "symfony/dotenv": "^8.0"
     },
     "autoload": {
         "files": [
-            "lib/sodium/bootstrap.php"
+            "lib/sodium/bootstrap.php",
+            "app/bootstrap.php"
         ]
     },
     "autoload-dev": {
