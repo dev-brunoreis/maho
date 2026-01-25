@@ -1,0 +1,41 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View
+ */
+$_helper = $this->helper('catalog/output');
+$_product = $this->getProduct();
+?>
+<script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice(<?= $this->getJsonConfig() ?>);
+</script>
+<div openwire="catalog/product_view" data-ui="vue:Catalog/Product/View" data-props='<?= json_encode([
+    'product' => (int) $_product->getId(),
+    'isSaleable' => (bool) $_product->isSaleable(),
+    'messagesHtml' => $this->getMessagesBlock()->toHtml(),
+    'formKeyHtml' => $this->getBlockHtml('formkey'),
+    'reviewsSummaryHtml' => $this->getReviewsSummaryHtml($_product, 'default', false),
+    'shortDescription' => $_product->getShortDescription() ? $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') : '',
+    'productName' => $_helper->productAttribute($_product, $_product->getName(), 'name'),
+    'submitUrl' => $this->getSubmitUrlCustom($_product, ['_secure' => $this->_isSecure()], false),
+    'hasOptions' => $this->hasOptions()
+], JSON_PRETTY_PRINT) ?>'>
+    <slot name="price"><?= $this->getPriceHtml($_product) ?></slot>
+    <slot name="tier_price"><?= $this->getTierPriceHtml() ?></slot>
+    <slot name="media"> <?= $this->getChildHtml('media') ?></slot>
+    <slot name="bundle_prices"> <?= $this->getChildHtml('bundle_prices') ?></slot>
+    <slot name="product_type_availability"> <?= $this->getChildHtml('product_type_availability') ?></slot>
+    <slot name="alert_urls"> <?= $this->getChildHtml('alert_urls') ?></slot>
+    <slot name="other"> <?= $this->getChildHtml('other') ?></slot>
+    <slot name="container1"> <?= $this->getChildChildHtml('container1', '', true, true) ?></slot>
+    <slot name="product_type_data"> <?= $this->getChildHtml('product_type_data') ?></slot>
+    <slot name="extrahint"> <?= $this->getChildHtml('extrahint') ?></slot>
+    <slot name="addtocart"> <?= $this->getChildHtml('addtocart') ?></slot>
+    <slot name="addto"> <?= $this->getChildHtml('addto') ?></slot>
+    <slot name="sharing"> <?= $this->getChildHtml('sharing') ?></slot>
+    <slot name="extra_buttons"> <?= $this->getChildHtml('extra_buttons') ?></slot>
+    <slot name="related_products"> <?= $this->getChildHtml('related_products') ?></slot>
+    <slot name="container2"> <?= $this->getChildChildHtml('container2', '', true, true) ?></slot>
+    <slot name="upsell_products"> <?= $this->getChildHtml('upsell_products') ?></slot>
+    <slot name="product_additional_data"> <?= $this->getChildHtml('product_additional_data') ?></slot>
+
+</div>

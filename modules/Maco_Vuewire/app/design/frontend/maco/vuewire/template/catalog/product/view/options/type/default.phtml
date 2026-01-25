@@ -1,0 +1,14 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Options_Type_Default
+ */
+$option = $this->getOption();
+?>
+<div openwire="catalog/product_view_options_type_default" data-ui="vue:Catalog/Product/View/Options/Type/Default"
+    data-props='<?= json_encode([
+        'option' => [
+            'id' => $option->getId(),
+            'title' => $option->getTitle()
+        ]
+    ]) ?>'>
+</div>

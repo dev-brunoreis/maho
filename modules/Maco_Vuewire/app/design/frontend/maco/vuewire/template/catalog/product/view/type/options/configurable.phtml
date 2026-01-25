@@ -1,0 +1,21 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Type_Configurable
+ */
+$product = $this->getProduct();
+$attributes = $this->getAllowAttributes();
+$jsonConfig = $this->getJsonConfig();
+?>
+<div openwire="catalog/product_view_type_options_configurable"
+    data-ui="vue:Catalog/Product/View/Type/Options/Configurable" data-props='<?= json_encode([
+        'attributes' => array_map(function ($attribute) {
+                return [
+                    'id' => $attribute->getAttributeId(),
+                    'label' => $attribute->getLabel()
+                ];
+            }, $attributes->getItems()),
+        'jsonConfig' => $jsonConfig,
+        'isSaleable' => (bool) $product->isSaleable()
+    ]) ?>'>
+    <slot name="after"><?= $this->getChildHtml('after') ?></slot>
+</div>

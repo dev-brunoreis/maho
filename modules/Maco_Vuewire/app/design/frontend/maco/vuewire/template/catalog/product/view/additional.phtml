@@ -1,0 +1,13 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Additional
+ */
+?>
+<div openwire="catalog/product_view_additional" data-ui="vue:Catalog/Product/View/Additional"
+    data-props='<?= json_encode([]) ?>'>
+    <slot name="children">
+        <?php foreach ($this->getChildHtmlList() as $_html): ?>
+            <?= $_html ?>
+        <?php endforeach ?>
+    </slot>
+</div>

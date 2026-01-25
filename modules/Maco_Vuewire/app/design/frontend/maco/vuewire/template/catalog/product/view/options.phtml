@@ -1,0 +1,30 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Options
+ */
+$options = $this->getOptions();
+$optionsIterable = $options;
+if ($optionsIterable instanceof \Traversable) {
+    $optionsIterable = iterator_to_array($optionsIterable);
+}
+if (!is_array($optionsIterable)) {
+    $optionsIterable = [];
+}
+
+$optionsArr = $optionsIterable ? array_map(function($option) {
+    return [
+        'id' => (int) $option->getId()
+    ];
+}, $optionsIterable) : [];
+?>
+<div openwire="catalog/product_view_options" data-ui="vue:Catalog/Product/View/Options"
+    data-props='<?= json_encode([
+        'options' => $optionsArr,
+        'jsonConfig' => $this->getJsonConfig()
+    ]) ?>'>
+    <?php foreach ($optionsIterable as $option): ?>
+        <slot name="option-<?= (int) $option->getId() ?>">
+            <?= $this->getOptionHtml($option) ?>
+        </slot>
+    <?php endforeach; ?>
+</div>

@@ -1,0 +1,20 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Options_Type_Date
+ */
+$option = $this->getOption();
+$optionId = $option->getId();
+?>
+<div openwire="catalog/product_view_options_type_date" data-ui="vue:Catalog/Product/View/Options/Type/Date"
+    data-props='<?= json_encode([
+        'option' => [
+            'id' => $optionId,
+            'title' => $option->getTitle(),
+            'isRequired' => $option->getIsRequired(),
+            'type' => $option->getType()
+        ],
+        'formatedPrice' => $this->getFormatedPrice(),
+        'dateHtml' => $this->getDateHtml(),
+        'timeHtml' => $this->getTimeHtml()
+    ]) ?>'>
+</div>

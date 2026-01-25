@@ -1,0 +1,39 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Media
+ */
+$_product = $this->getProduct();
+$mainImage = $this->helper('catalog/image')->init($_product, 'image');
+$block = $this;
+
+$galleryImages = $this->getGalleryImages();
+if ($galleryImages instanceof \Traversable) {
+    $galleryImages = iterator_to_array($galleryImages);
+} elseif (is_object($galleryImages) && method_exists($galleryImages, 'getItems')) {
+    $galleryImages = $galleryImages->getItems();
+} elseif (!is_array($galleryImages)) {
+    $galleryImages = [];
+}
+
+$galleryImages = array_values(array_filter($galleryImages, function($img) use ($block) {
+    return $block->isGalleryImageVisible($img);
+}));
+?>
+<div openwire="catalog/product_view_media" data-ui="vue:Catalog/Product/View/Media"
+    data-props='<?= json_encode([
+        'mainImage' => (string)$mainImage,
+        'mainImageLabel' => $this->escapeHtml($this->getImageLabel()),
+        'mainImageWidth' => $mainImage->getOriginalWidth(),
+        'mainImageHeight' => $mainImage->getOriginalHeight(),
+        'galleryImages' => array_map(function($img) use ($_product, $block) {
+            return [
+                'url' => $block->getGalleryImageUrl($img),
+                'label' => $block->escapeHtml($img->getLabel() ?: $_product->getName() . ' - ' . $block->__('Image')),
+                'thumbnail' => (string)$block->helper('catalog/image')->init($_product, 'thumbnail', $img->getFile())->resize(75),
+                'thumbnail2x' => (string)$block->helper('catalog/image')->init($_product, 'thumbnail', $img->getFile())->resize(150),
+                'visible' => $block->isGalleryImageVisible($img)
+            ];
+        }, $galleryImages)
+    ]) ?>'>
+    <slot name="after"><?= $this->getChildHtml('after') ?></slot>
+</div>

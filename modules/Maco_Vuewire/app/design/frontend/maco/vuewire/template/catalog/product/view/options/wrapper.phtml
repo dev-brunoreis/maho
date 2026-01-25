@@ -1,0 +1,11 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View
+ */
+?>
+<div openwire="catalog/product_view_options_wrapper" data-ui="vue:Catalog/Product/View/Options/Wrapper"
+    data-props='<?= json_encode([
+        'hasRequiredOptions' => $this->hasRequiredOptions()
+    ]) ?>'>
+    <slot name="children"><?= $this->getChildHtml('', true, true) ?></slot>
+</div>

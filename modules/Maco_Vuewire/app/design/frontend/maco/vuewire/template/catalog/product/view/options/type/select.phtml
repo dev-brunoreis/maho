@@ -1,0 +1,18 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Options_Type_Select
+ */
+$option = $this->getOption();
+$optionId = $option->getId();
+?>
+<div openwire="catalog/product_view_options_type_select" data-ui="vue:Catalog/Product/View/Options/Type/Select"
+    data-props='<?= json_encode([
+        'option' => [
+            'id' => $optionId,
+            'title' => $option->getTitle(),
+            'isRequired' => $option->getIsRequired(),
+            'type' => $option->getType()
+        ],
+        'valuesHtml' => $this->getValuesHtml()
+    ]) ?>'>
+</div>

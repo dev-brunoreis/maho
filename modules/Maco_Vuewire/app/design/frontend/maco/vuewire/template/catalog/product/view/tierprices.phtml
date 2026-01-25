@@ -1,0 +1,33 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View
+ */
+$_product = $this->getProduct();
+$_tierPrices = $this->getTierPrices();
+$_finalPriceInclTax = $this->helper('tax')->getPrice($_product, $_product->getFinalPrice(), true);
+$_catalogHelper = Mage::helper('catalog');
+$_weeeTaxAmount = Mage::helper('weee')->getAmountForDisplay($_product);
+if (Mage::helper('weee')->typeOfDisplay($_product, [1,2,4])) {
+    $_weeeTaxAttributes = Mage::helper('weee')->getProductWeeeAttributesForDisplay($_product);
+}
+?>
+<div openwire="catalog/product_view_tierprices" data-ui="vue:Catalog/Product/View/Tierprices"
+    data-props='<?= json_encode([
+        'tierPrices' => $_tierPrices,
+        'inGrouped' => $this->getInGrouped(),
+        'finalPriceInclTax' => $_finalPriceInclTax,
+        'weeeTaxAmount' => $_weeeTaxAmount,
+        'weeeTaxAttributes' => isset($_weeeTaxAttributes) ? array_map(function($attr) {
+            return [
+                'name' => $attr->getName(),
+                'amount' => $attr->getAmount(),
+                'taxAmount' => $attr->getTaxAmount()
+            ];
+        }, $_weeeTaxAttributes) : [],
+        'displayBothPrices' => $this->helper('tax')->displayBothPrices(),
+        'displayPriceIncludingTax' => $this->helper('tax')->displayPriceIncludingTax(),
+        'weeeDisplayType' => Mage::helper('weee')->typeOfDisplay($_product),
+        'canApplyMsrp' => $_catalogHelper->canApplyMsrp($_product),
+        'isShowPriceOnGesture' => $_catalogHelper->isShowPriceOnGesture($_product)
+    ]) ?>'>
+</div>

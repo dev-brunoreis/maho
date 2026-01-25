@@ -1,0 +1,11 @@
+{
+  "skin/frontend/maco/vuewire/js/main.js": {
+    "file": "app.js",
+    "name": "app",
+    "src": "skin/frontend/maco/vuewire/js/main.js",
+    "isEntry": true,
+    "css": [
+      "app.css"
+    ]
+  }
+}

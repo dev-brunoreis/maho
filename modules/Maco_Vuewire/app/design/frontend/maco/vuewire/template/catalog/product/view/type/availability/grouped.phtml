@@ -1,0 +1,16 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Type_Grouped
+ */
+$_product = $this->getProduct();
+$_associatedProducts = $this->getAssociatedProducts();
+$_hasAssociatedProducts = count($_associatedProducts) > 0;
+$isAvailable = method_exists($_product, 'isAvailable') ? (bool) $_product->isAvailable() : (bool) $_product->isSaleable();
+?>
+<div openwire="catalog/product_view_type_availability_grouped" data-ui="vue:Catalog/Product/View/Type/Availability/Grouped"
+    data-props='<?= json_encode([
+        'isAvailable' => $isAvailable,
+        'hasAssociatedProducts' => $_hasAssociatedProducts,
+        'displayProductStockStatus' => $this->displayProductStockStatus()
+    ]) ?>'>
+</div>

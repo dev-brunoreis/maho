@@ -1,0 +1,10 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Abstract
+ */
+$_product = $this->getProduct();
+?>
+<div openwire="catalog/product_view_type_default" data-ui="vue:Catalog/Product/View/Type/Default"
+    data-props='<?= json_encode([]) ?>'>
+    <slot name="product_type_data_extra"><?= $this->getChildHtml('product_type_data_extra') ?></slot>
+</div>

@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "preserve",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["skin/frontend/maco/vuewire/js/*"]
+    },
+    "types": ["vite/client"]
+  },
+  "include": [
+    "skin/frontend/maco/vuewire/js/**/*.ts",
+    "skin/frontend/maco/vuewire/js/**/*.d.ts",
+    "skin/frontend/maco/vuewire/js/**/*.vue"
+  ],
+  "exclude": ["node_modules", "skin/frontend/maco/vuewire/js/dist"]
+}
+

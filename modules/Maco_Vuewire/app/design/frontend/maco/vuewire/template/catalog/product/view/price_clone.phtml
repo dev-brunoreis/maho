@@ -1,0 +1,11 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View
+ */
+$_product = $this->getProduct();
+?>
+<div openwire="catalog/product_view_price_clone" data-ui="vue:Catalog/Product/View/PriceClone"
+    data-props='<?= json_encode([
+        'priceHtml' => $this->getPriceHtml($_product, false, '_clone')
+    ]) ?>'>
+</div>

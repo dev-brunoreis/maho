@@ -1,0 +1,15 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View
+ */
+$_product = $this->getProduct();
+$_wishlistSubmitUrl = $this->helper('wishlist')->isAllow() ? $this->helper('wishlist')->getAddUrlWithCustomParams($_product, [], false) : '';
+$_compareUrl = $this->helper('catalog/product_compare')->getAddUrlCustom($_product, false);
+?>
+<div openwire="catalog/product_view_addto" data-ui="vue:Catalog/Product/View/Addto"
+    data-props='<?= json_encode([
+        'wishlistSubmitUrl' => $_wishlistSubmitUrl,
+        'compareUrl' => $_compareUrl,
+        'formKey' => $this->getFormKey()
+    ]) ?>'>
+</div>

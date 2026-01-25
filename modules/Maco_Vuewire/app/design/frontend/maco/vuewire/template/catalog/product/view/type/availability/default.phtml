@@ -1,0 +1,13 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Type_Configurable
+ */
+$_product = $this->getProduct();
+$isAvailable = method_exists($_product, 'isAvailable') ? (bool) $_product->isAvailable() : (bool) $_product->isSaleable();
+?>
+<div openwire="catalog/product_view_type_availability_default" data-ui="vue:Catalog/Product/View/Type/Availability/Default"
+    data-props='<?= json_encode([
+        'isAvailable' => $isAvailable,
+        'displayProductStockStatus' => $this->displayProductStockStatus()
+    ]) ?>'>
+</div>

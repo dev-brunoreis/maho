@@ -1,0 +1,20 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Options_Type_Text
+ */
+$option = $this->getOption();
+$optionId = $option->getId();
+?>
+<div openwire="catalog/product_view_options_type_text" data-ui="vue:Catalog/Product/View/Options/Type/Text"
+    data-props='<?= json_encode([
+        'option' => [
+            'id' => $optionId,
+            'title' => $option->getTitle(),
+            'isRequired' => $option->getIsRequired(),
+            'type' => $option->getType(),
+            'maxCharacters' => $option->getMaxCharacters(),
+            'defaultValue' => $this->escapeHtml($this->getDefaultValue())
+        ],
+        'formatedPrice' => $this->getFormatedPrice()
+    ]) ?>'>
+</div>

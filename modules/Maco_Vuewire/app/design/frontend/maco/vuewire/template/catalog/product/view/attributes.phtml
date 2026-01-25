@@ -1,0 +1,19 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Attributes
+ */
+$_helper = $this->helper('catalog/output');
+$_product = $this->getProduct();
+$_additional = $this->getAdditionalData();
+?>
+<div openwire="catalog/product_view_attributes" data-ui="vue:Catalog/Product/View/Attributes"
+    data-props='<?= json_encode([
+        'additionalData' => $_additional ? array_map(function($data) use ($_helper, $_product) {
+            return [
+                'label' => $data['label'],
+                'value' => $_helper->productAttribute($_product, $data['value'], $data['code']),
+                'code' => $data['code']
+            ];
+        }, $_additional) : []
+    ]) ?>'>
+</div>

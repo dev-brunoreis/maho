@@ -1,0 +1,16 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View
+ */
+$_product = $this->getProduct();
+$buttonTitle = $this->quoteEscape($this->__('Add to Cart'));
+?>
+<div openwire="catalog/product_view_addtocart" data-ui="vue:Catalog/Product/View/Addtocart"
+    data-props='<?= json_encode([
+        'buttonTitle' => $buttonTitle,
+        'defaultQty' => $this->getProductDefaultQty() * 1,
+        'isGrouped' => (bool) $_product->isGrouped(),
+        'isSaleable' => (bool) $_product->isSaleable()
+    ]) ?>'>
+    <slot name="children"><?= $this->getChildHtml('', true, true) ?></slot>
+</div>

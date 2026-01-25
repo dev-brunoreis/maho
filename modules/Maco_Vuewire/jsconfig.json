@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["skin/frontend/maco/vuewire/js/*"]
+    }
+  },
+  "exclude": ["node_modules", "skin/frontend/maco/vuewire/js/dist"]
+}
+

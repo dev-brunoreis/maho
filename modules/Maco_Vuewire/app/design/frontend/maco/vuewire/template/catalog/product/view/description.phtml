@@ -1,0 +1,12 @@
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Description
+ */
+$_product = $this->getProduct();
+$_description = $_product->getDescription();
+?>
+<div openwire="catalog/product_view_description" data-ui="vue:Catalog/Product/View/Description"
+    data-props='<?= json_encode([
+        'description' => $_description ? $this->helper('catalog/output')->productAttribute($_product, $_description, 'description') : ''
+    ]) ?>'>
+</div>
