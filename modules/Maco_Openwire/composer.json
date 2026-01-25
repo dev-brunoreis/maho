@@ -1,0 +1,86 @@
+{
+    "name": "maco-studios/openwire",
+    "description": "A Magento 1 module for building reactive components.",
+    "license": "MIT",
+    "type": "magento-module",
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.48",
+        "ergebnis/license": "^2.7",
+        "friendsofphp/php-cs-fixer": "^3.92",
+        "pestphp/pest": "^4.3",
+        "phpmd/phpmd": "^2.15",
+        "phpstan/phpstan": "^2.1",
+        "rector/rector": "^2.3"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "autoload": {
+        "psr-0": {
+            "Maco_Openwire": "app/code/local/"
+        },
+        "classmap": [
+            "app/code/local/"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "composer-normalize": {
+            "indent-size": 4,
+            "indent-style": "space"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@auto"
+        ],
+        "post-update-cmd": [
+            "@auto"
+        ],
+        "auto": [
+            "if [ -d vendor/ergebnis/composer-normalize ];then composer normalize -q;fi"
+        ],
+        "cs:check": "@php vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "cs:fix": "@php vendor/bin/php-cs-fixer fix",
+        "fix": [
+            "@cs:fix",
+            "@rector"
+        ],
+        "lint": [
+            "@cs:check",
+            "@stan",
+            "@phpmd"
+        ],
+        "phpmd": "@php -d error_reporting=E_ALL^E_DEPRECATED vendor/bin/phpmd app,tests text codesize,unusedcode,naming",
+        "rector": "@php vendor/bin/rector process",
+        "stan": "@php -d error_reporting=E_ALL^E_DEPRECATED vendor/bin/phpstan analyse app tests --memory-limit=2G",
+        "test": [
+            "@php vendor/bin/pest",
+            "npm run test"
+        ],
+        "test:feature": "@php vendor/bin/pest --testsuite=Feature",
+        "test:integration": "@php vendor/bin/pest --testsuite=Integration",
+        "test:unit": "@php vendor/bin/pest --testsuite=Unit"
+    },
+    "scripts-descriptions": {
+        "cs:check": "Check code style with PHP-CS-Fixer",
+        "fix": "Fix code style and run Rector",
+        "lint": "Check code style and run static analysis",
+        "phpmd": "Run PHPMD mess detection",
+        "rector": "Process code with Rector",
+        "stan": "Run PHPStan static analysis",
+        "test": "Run all Pest tests",
+        "test:feature": "Run feature tests with Pest",
+        "test:integration": "Run integration tests with Pest",
+        "test:unit": "Run unit tests with Pest"
+    }
+}

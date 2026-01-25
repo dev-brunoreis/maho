@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <action method="addJs">
+                <script>openwire/dist/openwire.js</script>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="openwire_component/counter" name="counter.component" template="openwire/counter.phtml">
+                <action method="setData"><key>count</key><value>0</value></action> <!-- Optional: initial count -->
+            </block>
+        </reference>
+    </default>
+</layout>

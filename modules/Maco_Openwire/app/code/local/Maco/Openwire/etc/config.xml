@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!-- OpenWire Module Configuration -->
+<!-- Defines module metadata, class mappings, routing, and ACL permissions -->
+<config>
+    <modules>
+        <Maco_Openwire>
+            <version>0.0.1</version>
+        </Maco_Openwire>
+    </modules>
+    <global>
+        <!-- Helper class mappings -->
+        <helpers>
+            <openwire>
+                <class>Maco_Openwire_Helper</class>
+            </openwire>
+        </helpers>
+        <!-- Model class mappings and rewrites -->
+        <models>
+            <openwire>
+                <class>Maco_Openwire_Model</class>
+                <resourceModel>openwire_resource</resourceModel>
+            </openwire>
+            <openwire_resource>
+                <class>Maco_Openwire_Model_Resource</class>
+            </openwire_resource>
+            <!-- Template compiler model -->
+            <openwire_template_compiler>
+                <class>Maco_Openwire_Model_Template_Compiler</class>
+            </openwire_template_compiler>
+            <!-- Core layout rewrite for component support -->
+            <core>
+                <rewrite>
+                    <layout>
+                        <class>Maco_Openwire_Model_Layout</class>
+                    </layout>
+                </rewrite>
+            </core>
+        </models>
+        <!-- Block class mappings -->
+        <blocks>
+            <openwire>
+                <class>Maco_Openwire_Block</class>
+            </openwire>
+            <!-- Component blocks for reactive UI -->
+            <openwire_component>
+                <class>Maco_Openwire_Block_Component</class>
+            </openwire_component>
+        </blocks>
+    </global>
+    <frontend>
+        <!-- Frontend routing configuration -->
+        <routers>
+            <openwire>
+                <use>standard</use>
+                <args>
+                    <module>Maco_Openwire</module>
+                    <frontName>openwire</frontName>
+                </args>
+            </openwire>
+        </routers>
+        <!-- Layout updates for frontend -->
+        <layout>
+            <updates>
+                <openwire>
+                    <file>openwire.xml</file>
+                </openwire>
+            </updates>
+        </layout>
+    </frontend>
+    <adminhtml>
+        <!-- Admin layout updates -->
+        <layout>
+            <updates>
+                <openwire>
+                    <file>openwire.xml</file>
+                </openwire>
+            </updates>
+        </layout>
+        <!-- Admin ACL permissions -->
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <openwire>
+                                    <title>OpenWire</title>
+                                </openwire>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+</config>

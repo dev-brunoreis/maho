@@ -1,0 +1,14 @@
+{
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "*.ts": "${capture}.js",
+        "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+        "*.jsx": "${capture}.js",
+        "*.tsx": "${capture}.ts",
+        "tsconfig.json": "tsconfig.*.json",
+        "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock, *.js,tsconfig*.json",
+        "composer.json": "composer.lock,phpunit.xml, phpcs.xml, phpcs.xml.dist,*php-cs-fixer.php,.php-cs-fixer*",
+        ".gitignore": ".gitkeep, .gitattributes,.editorconfig",
+        "README.md": "*.md, LICENSE, LICENSE.*"
+    }
+}

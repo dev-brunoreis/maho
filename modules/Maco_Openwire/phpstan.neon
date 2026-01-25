@@ -1,0 +1,18 @@
+parameters:
+    level: 5
+    paths:
+        - app
+        - tests
+    excludePaths:
+        - app/code/local/Maco/Openwire/Helper/Data.php
+        - app/code/local/Maco/Openwire/controllers/Adminhtml/OpenwireController.php
+        - app/code/local/Maco/Openwire/controllers/UpdateController.php
+    ignoreErrors:
+        # Magento static methods that PHPStan doesn't know about
+        - '#Call to an undefined static method Mage::(getModel|app|getSingleton)\(\)\.#'
+        # Component methods that may not be defined in base class
+        - '#Call to an undefined method Maco_Openwire_Block_Component_Abstract::(authorize|loadState|persistState|getComponentAlias)\(\)\.#'
+        # Unused traits (expected in a library)
+        - '#Trait .* is used zero times and is not analysed\.#'
+        # Boolean expressions that are always false/true due to PHPDoc
+        - '#Negated boolean expression is always false\.#'
