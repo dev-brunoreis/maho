@@ -3,17 +3,53 @@
 use Tests\TestCase;
 
 it('writes .env without install date', function () {
-    $envPath = rtrim((string) MAHO_ROOT_DIR, '/\\') . '/.env';
+    // Set required env vars for test setup
+    $_ENV['MAHO_DB_ENGINE'] = 'sqlite';
+    $_ENV['MAHO_DB_NAME'] = ':memory:';
 
-    expect(is_file($envPath))->toBeTrue();
+    $tempDir = sys_get_temp_dir() . '/maho_test_' . uniqid();
+    mkdir($tempDir);
+    $envPath = $tempDir . '/.env';
 
-    $contents = file_get_contents($envPath);
-    expect($contents)->not->toBeFalse();
+    // Set MAHO_ENV_FILE to the temp path
+    $_ENV['MAHO_ENV_FILE'] = $envPath;
+    $_SERVER['MAHO_ENV_FILE'] = $envPath;
+    putenv('MAHO_ENV_FILE=' . $envPath);
 
-    // Should contain DB creds (engine/name) but not INSTALL_DATE
-    expect(stripos($contents, 'MAHO_DB_ENGINE'))->not->toBeFalse();
-    expect(stripos($contents, 'MAHO_DB_NAME'))->not->toBeFalse();
-    expect(stripos($contents, 'INSTALL_DATE'))->toBeFalse();
+    try {
+        // Instantiate the installer config and write the env file
+        $config = new Mage_Install_Model_Installer_Config();
+        $data = [
+            'db_engine' => 'sqlite',
+            'db_name' => 'test.db',
+            'db_prefix' => '',
+        ];
+        $config->setConfigData($data);
+
+        // Use reflection to call the protected writeEnvFile method
+        $ref = new ReflectionMethod($config, 'writeEnvFile');
+        $ref->invoke($config, $data);
+
+        expect(is_file($envPath))->toBeTrue();
+
+        $contents = file_get_contents($envPath);
+        expect($contents)->not->toBeFalse();
+
+        // Should contain DB creds but not INSTALL_DATE
+        expect(stripos($contents, 'MAHO_DB_ENGINE'))->not->toBeFalse();
+        expect(stripos($contents, 'MAHO_DB_NAME'))->not->toBeFalse();
+        expect(stripos($contents, 'INSTALL_DATE'))->toBeFalse();
+    } finally {
+        // Cleanup
+        if (file_exists($envPath)) {
+            unlink($envPath);
+        }
+        rmdir($tempDir);
+
+        // Restore env
+        unset($_ENV['MAHO_ENV_FILE'], $_SERVER['MAHO_ENV_FILE']);
+        putenv('MAHO_ENV_FILE');
+    }
 });
 
 it('persists install date in database and model works', function () {
