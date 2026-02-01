@@ -22,5 +22,17 @@ if [ $# -gt 0 ]; then
         exec gosu $WWWUSER "$@"
     fi
 else
+    if [ ! -d /var/www/html/public ]; then
+        echo "Waiting for /var/www/html/public to be available..."
+        for i in $(seq 1 30); do
+            [ -d /var/www/html/public ] && break
+            sleep 1
+        done
+        if [ ! -d /var/www/html/public ]; then
+            echo "Timeout: /var/www/html/public still missing." >&2
+            exit 1
+        fi
+        echo "Directory ready."
+    fi
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
