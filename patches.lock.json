@@ -1,5 +1,5 @@
 {
-    "_hash": "f0bab4bb22d0fbb575750475119e507896c758ab0b133fc88a9ddc178dec486c",
+    "_hash": "7da7508abc8d65c6332bb31037eee041797b3c2e3b78dd578a54e1c0867d75df",
     "patches": {
         "mahocommerce/maho": [
             {
@@ -97,6 +97,16 @@
                 "description": "Fix Symfony Length deprecation (named args)",
                 "url": "patches/0010-symfony-validator-length-named-args.patch",
                 "sha256": "fa070ee4d7344054b81c7843ea471f2e36a8150e069bd4eb1db3ac6e6c3f0857",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mahocommerce/maho",
+                "description": "Allow duplicate item id (overwrite) in Collection",
+                "url": "patches/0011-collection-allow-duplicate-id-overwrite.patch",
+                "sha256": "62926c77ff84b5e327218bfa3fdb0a7ac946060962e4e57fa280cb57f99c8539",
                 "depth": 1,
                 "extra": {
                     "provenance": "root"
