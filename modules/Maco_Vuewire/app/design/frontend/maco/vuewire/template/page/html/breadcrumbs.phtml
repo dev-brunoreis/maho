@@ -1,0 +1,28 @@
+<?php
+/**
+ * @see Mage_Page_Block_Html_Breadcrumbs
+ *
+ * In Maho the block assigns 'crumbs' in _toHtml(); the template receives $crumbs
+ * (or use $this->getData('crumbs')). Structure: [crumbName => ['label','title','link','first','last','readonly']].
+ */
+$_raw = isset($crumbs) && is_array($crumbs) ? $crumbs : $this->getData('crumbs');
+if (!is_array($_raw)) {
+    $_raw = [];
+}
+$_crumbsData = [];
+foreach ($_raw as $_crumb) {
+    if (!is_array($_crumb)) {
+        continue;
+    }
+    $_link = isset($_crumb['link']) ? (string) $_crumb['link'] : (isset($_crumb['url']) ? (string) $_crumb['url'] : null);
+    $_crumbsData[] = [
+        'label' => (string) ($_crumb['label'] ?? $_crumb['title'] ?? ''),
+        'link' => $_link !== '' ? $_link : null,
+    ];
+}
+?>
+<div openwire="page/html_breadcrumbs" data-ui="vue:Page/Html/Breadcrumbs"
+    data-props='<?= json_encode(['crumbs' => $_crumbsData]) ?>'>
+    <slot name="before"><?= $this->getChildHtml('before') ?></slot>
+    <slot name="after"><?= $this->getChildHtml('after') ?></slot>
+</div>
