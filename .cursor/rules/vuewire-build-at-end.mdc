@@ -1,0 +1,20 @@
+---
+description: Run Vuewire build at the end when editing Maco_Vuewire frontend assets
+globs: "**/Maco_Vuewire/**/*.{phtml,vue,ts,js},**/Maco_Vuewire/**/registry.js"
+alwaysApply: false
+---
+
+# Build no fim (Maco_Vuewire)
+
+Ao concluir alterações em assets do tema Vuewire (templates `.phtml`, componentes `.vue`, contratos em `contracts/`, `registry.js`, `main.js`, etc.), **sempre rodar o build ao final da tarefa**.
+
+- **Comando**: `npm run build`
+- **Diretório**: `modules/Maco_Vuewire` (raiz do módulo, onde estão `package.json` e `vite.config.js`)
+
+Exemplo: depois de criar ou editar componentes, contracts ou templates, executar:
+
+```bash
+cd modules/Maco_Vuewire && npm run build
+```
+
+Assim o output em `skin/frontend/maco/vuewire/js/dist/` (app.js, app.css) fica atualizado para o Magento usar.

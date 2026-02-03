@@ -1,0 +1,99 @@
+---
+description: Padrão para criar componentes Vuewire (phtml + Vue + contract + registry) para tema Magento 1
+globs: "**/Maco_Vuewire/**/*.{phtml,vue,ts},**/Maco_Vuewire/**/registry.js"
+alwaysApply: false
+---
+
+# Magento 1 Vuewire – Padrão de componentes
+
+Ao criar ou editar web components para o tema Vuewire (Maco_Vuewire), seguir sempre este padrão. A **fonte da verdade** é o `.phtml`: ele define `openwire`, `data-ui`, `data-props` e os `<slot name="...">`; o Vue e o contract apenas consomem essa interface.
+
+## Convenções de paths e nomes
+
+Exemplo: template Magento `catalog/product/view/description.phtml`.
+
+| Camada | Exemplo | Regra |
+|--------|---------|--------|
+| **Template (PHTML)** | `app/design/frontend/maco/vuewire/template/catalog/product/view/description.phtml` | Caminho padrão Magento 1. Base: `modules/Maco_Vuewire/app/design/frontend/maco/vuewire/template/`. |
+| **Openwire (id)** | `catalog/product_view_description` | Path com `/` por módulo, `_` entre segmentos: `catalog` + `product_view` + `description`. |
+| **data-ui** | `vue:Catalog/Product/View/Description` | Prefixo `vue:` + path em PascalCase por segmento. |
+| **Componente Vue** | `skin/.../js/components/Catalog/Product/View/Description.vue` | Path em PascalCase espelhando o template. |
+| **Contract** | `contracts/catalog/product/view/description.ts` | Path em lowercase. Nested folha: `options/wrapper/bottom.phtml` → `options/wrapper_bottom.ts`. |
+| **Registry** | Chave `Catalog/Product/View/Description` em `bridge/registry.js` | Chave = valor de `data-ui` sem o prefixo `vue:`. |
+
+Novos templates: `app/design/frontend/maco/vuewire/template/` seguindo a hierarquia do core (ex.: `checkout/cart/item/default.phtml` → `.../template/checkout/cart/item/default.phtml`).
+
+## Estrutura do PHTML
+
+- Uma única `<div>` raiz com:
+  - `openwire="{id}"` (snake_case)
+  - `data-ui="vue:{PascalCasePath}"`
+  - `data-props='<?= json_encode([...]) ?>'` (valores serializáveis: int, bool, string, array)
+- Slots (opcional): `<slot name="nome"><?= $this->getChildHtml('...') ?></slot>`
+- DocBlock: `@see Mage_*_Block_*`
+
+```php
+<?php
+/**
+ * @see Mage_Catalog_Block_Product_View_Description
+ */
+$_product = $this->getProduct();
+?>
+<div openwire="catalog/product_view_description" data-ui="vue:Catalog/Product/View/Description"
+    data-props='<?= json_encode([
+        'description' => $_description ? $this->helper('catalog/output')->productAttribute(...) : ''
+    ]) ?>'>
+</div>
+```
+
+## Estrutura do contrato (TypeScript)
+
+- Imports de `@/contracts/shared` ou `../../../shared`: `ContractId`, `HtmlString`, `SlotHtmlMap` (se houver slots).
+- Constante: `XxxContract = 'catalog/product_view_xxx@1' as const satisfies ContractId`.
+- Se slots: `XxxSlotName` (union) e `XxxSlots = Partial<Record<XxxSlotName, HtmlString>> & SlotHtmlMap`.
+- Interface: `XxxPropsV1` com campos do `data-props`; se há slots, `slots?: XxxSlots`.
+
+```ts
+import type { ContractId, HtmlString, SlotHtmlMap } from '../../../shared';
+
+export const CatalogProductViewAddtocartContract =
+  'catalog/product_view_addtocart@1' as const satisfies ContractId;
+
+export type CatalogProductViewAddtocartSlotName = 'children';
+export type CatalogProductViewAddtocartSlots =
+  Partial<Record<CatalogProductViewAddtocartSlotName, HtmlString>> & SlotHtmlMap;
+
+export interface CatalogProductViewAddtocartPropsV1 {
+  buttonTitle: string;
+  defaultQty: number;
+  isGrouped: boolean;
+  isSaleable: boolean;
+  slots?: CatalogProductViewAddtocartSlots;
+}
+```
+
+## Estrutura do componente Vue
+
+- `<script setup lang="ts">` com `defineProps<XxxPropsV1>()` importando o tipo do contract.
+- Template: props e `<slot name="..."></slot>` onde o PHTML injeta HTML (runtime em main.js).
+- Slots Vue ou HTML bruto: `MaybeSlot.vue`; só HTML bruto: `RawHtmlSlot.vue` ou slot nativo.
+- Tradução: `$t('...')`.
+- **Sem estilização**: não incluir `<style>`, CSS scoped nem estilos próprios nos `.vue`. A estilização vem do tema/skin Magento (CSS existente); os componentes usam as mesmas classes que os templates originais para o CSS do tema continuar aplicando.
+
+```vue
+<template>
+  <div v-if="isSaleable" class="add-to-cart">
+    <slot name="children"></slot>
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { CatalogProductViewAddtocartPropsV1 } from '@/contracts/catalog/product/view/addtocart'
+defineProps<CatalogProductViewAddtocartPropsV1>()
+</script>
+```
+
+## Registry e exports
+
+- **Registry** (`bridge/registry.js`): entrada com chave = path PascalCase (data-ui sem `vue:`), valor = `() => import('../components/...')`.
+- **Contracts**: cada pasta com `index.ts` re-exportando os contratos; novos arquivos devem ser exportados no `index.ts` do nível correspondente.
