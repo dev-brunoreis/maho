@@ -6,6 +6,12 @@ alwaysApply: false
 
 # Magento 1 Vuewire – Padrão de componentes
 
+**Projeto:** Usamos o [Maho](https://github.com/MahoCommerce/maho) — plataforma de ecommerce PHP 8.3+ compatível com Magento 1. Os componentes Vuewire ficam no módulo `Maco_Vuewire`.
+
+**Implementação:** Usar apenas o codebase do Maho e a documentação do projeto para APIs e comportamento de blocos/templates. Não basear-se em OpenMage nem em documentação externa do core Magento 1.
+
+**Tema default do Maho:** Ao consultar o tema default (layout XML, paths de templates, nomes de blocos, estrutura de página), usar o tema default oficial do Maho: [app/design/frontend/base/default](https://github.com/MahoCommerce/maho/tree/main/app/design/frontend/base/default).
+
 Ao criar ou editar web components para o tema Vuewire (Maco_Vuewire), seguir sempre este padrão. A **fonte da verdade** é o `.phtml`: ele define `openwire`, `data-ui`, `data-props` e os `<slot name="...">`; o Vue e o contract apenas consomem essa interface.
 
 ## Convenções de paths e nomes

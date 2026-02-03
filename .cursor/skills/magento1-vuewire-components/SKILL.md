@@ -5,6 +5,12 @@ description: Create or extend Magento 1 Vuewire theme components (phtml + Vue + 
 
 # Magento 1 Vuewire components
 
+**Project:** We use [Maho](https://github.com/MahoCommerce/maho) — the modern PHP 8.3+ ecommerce platform (Magento 1–compatible). Vuewire components live in the `Maco_Vuewire` module within this codebase.
+
+**Implementation:** Use only the Maho codebase and project docs for block/template APIs and behaviour. Do not rely on OpenMage or external Magento 1 core documentation.
+
+**Maho default theme:** When looking up the default theme (layout XML, template paths, block names, page structure), use the official Maho default theme: [app/design/frontend/base/default](https://github.com/MahoCommerce/maho/tree/main/app/design/frontend/base/default).
+
 When the user asks to create web components for a specific Magento 1 area (e.g. "crie o componente do carrinho", "faça o bloco do header"), follow the **Maco_Vuewire** pattern. Apply the project rule in `.cursor/rules/magento1-vuewire-components.mdc` (it applies to `**/Maco_Vuewire/**/*.{phtml,vue,ts}` and `registry.js`).
 
 ## What to produce
