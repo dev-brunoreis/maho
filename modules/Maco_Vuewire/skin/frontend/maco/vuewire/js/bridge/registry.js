@@ -1,5 +1,6 @@
 export default {
     'Catalogsearch/Form/Mini': () => import('../components/Catalogsearch/Form/Mini.vue'),
+    'Cms/Content': () => import('../components/Cms/Content.vue'),
     'Newsletter/Subscribe': () => import('../components/Newsletter/Subscribe.vue'),
     'Page/Html/Breadcrumbs': () => import('../components/Page/Html/Breadcrumbs.vue'),
     'Page/Html/Footer': () => import('../components/Page/Html/Footer.vue'),

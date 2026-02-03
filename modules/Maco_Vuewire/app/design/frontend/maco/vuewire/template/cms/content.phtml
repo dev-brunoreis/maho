@@ -1,0 +1,20 @@
+<?php
+/**
+ * @see Mage_Cms_Block_Page (or block that provides page content)
+ * Template expects $pageData->getPageContent(); we get processed content from block or page.
+ */
+$_pageContent = '';
+if (method_exists($this, 'getPage') && $this->getPage()) {
+    $helper = Mage::helper('cms');
+    $processor = $helper->getPageTemplateProcessor();
+    $_pageContent = $processor->filter($this->getPage()->getContent());
+    if (method_exists($this, 'getMessagesBlock') && $this->getMessagesBlock()) {
+        $_pageContent = $this->getMessagesBlock()->toHtml() . $_pageContent;
+    }
+} elseif ($this->getData('pageData') && is_object($this->getData('pageData')) && method_exists($this->getData('pageData'), 'getPageContent')) {
+    $_pageContent = (string) $this->getData('pageData')->getPageContent();
+}
+?>
+<div openwire="cms/content" data-ui="vue:Cms/Content"
+    data-props='<?= json_encode(['pageContent' => $_pageContent]) ?>'>
+</div>
