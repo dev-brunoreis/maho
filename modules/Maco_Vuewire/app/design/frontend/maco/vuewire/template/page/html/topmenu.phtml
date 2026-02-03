@@ -1,0 +1,15 @@
+<?php
+/**
+ * @see Mage_Page_Block_Html_Topmenu
+ * Template expects block to provide getHtml('level-top') or child HTML for the nav menu.
+ */
+$_menuHtml = '';
+if (method_exists($this, 'getHtml')) {
+    $_menuHtml = (string) $this->getHtml('level-top');
+} else {
+    $_menuHtml = (string) $this->getChildHtml();
+}
+?>
+<div openwire="page/html_topmenu" data-ui="vue:Page/Html/Topmenu"
+    data-props='<?= json_encode(['menuHtml' => $_menuHtml]) ?>'>
+</div>

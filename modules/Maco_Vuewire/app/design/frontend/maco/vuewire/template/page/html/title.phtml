@@ -1,0 +1,10 @@
+<?php
+/**
+ * @see Mage_Page_Block_Html_Title
+ * Template expects block to provide getTitle() for the page heading.
+ */
+$_title = method_exists($this, 'getTitle') ? (string) $this->getTitle() : '';
+?>
+<div openwire="page/html_title" data-ui="vue:Page/Html/Title"
+    data-props='<?= json_encode(['title' => $_title]) ?>'>
+</div>

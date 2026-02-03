@@ -6,6 +6,8 @@ export default {
     'Page/Html/Footer': () => import('../components/Page/Html/Footer.vue'),
     'Page/Html/Header': () => import('../components/Page/Html/Header.vue'),
     'Page/Html/Notices': () => import('../components/Page/Html/Notices.vue'),
+    'Page/Html/Title': () => import('../components/Page/Html/Title.vue'),
+    'Page/Html/Topmenu': () => import('../components/Page/Html/Topmenu.vue'),
     'Page/Template/Links': () => import('../components/Page/Template/Links.vue'),
     'Catalog/Product/View': () => import('../components/Catalog/Product/View.vue'),
     'Catalog/Product/View/Media': () => import('../components/Catalog/Product/View/Media.vue'),
