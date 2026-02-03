@@ -1,0 +1,10 @@
+<?php
+/**
+ * @see Mage_Page_Block_Html_Footer
+ */
+$copyright = method_exists($this, 'getCopyright') ? $this->getCopyright() : '';
+?>
+<div openwire="page/html_footer" data-ui="vue:Page/Html/Footer"
+    data-props='<?= json_encode(['copyright' => (string) $copyright]) ?>'>
+    <slot name="content"><?= $this->getChildHtml('', true, true) ?></slot>
+</div>
