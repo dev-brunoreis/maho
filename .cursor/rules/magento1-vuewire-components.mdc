@@ -12,6 +12,8 @@ alwaysApply: false
 
 **Tema default do Maho:** Ao consultar o tema default (layout XML, paths de templates, nomes de blocos, estrutura de página), usar o tema default oficial do Maho: [app/design/frontend/base/default](https://github.com/MahoCommerce/maho/tree/main/app/design/frontend/base/default).
 
+**Layout XML:** Não é necessário definir nem alterar layout XML (ex.: `local.xml`, `openwire.xml`) ao criar um novo componente. O tema resolve o template pelo path; não adicionar `<reference name="…">` nem `setTemplate` a menos que o usuário peça explicitamente.
+
 Ao criar ou editar web components para o tema Vuewire (Maco_Vuewire), seguir sempre este padrão. A **fonte da verdade** é o `.phtml`: ele define `openwire`, `data-ui`, `data-props` e os `<slot name="...">`; o Vue e o contract apenas consomem essa interface.
 
 ## Convenções de paths e nomes

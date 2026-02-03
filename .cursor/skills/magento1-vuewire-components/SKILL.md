@@ -22,6 +22,8 @@ For each new Magento 1 block/template the user requests:
 3. **Vue component** – In `modules/Maco_Vuewire/skin/frontend/maco/vuewire/js/components/` with path in PascalCase (e.g. `Checkout/Cart/Item/Default.vue`). Use `defineProps<XxxPropsV1>()` from the contract; use `<slot name="...">` or MaybeSlot/RawHtmlSlot as appropriate; use `$t()` for labels. **Do not add styling**: no `<style>`, no scoped CSS, no component-specific CSS; components use the same class names as the original Magento templates so the theme/skin CSS applies.
 4. **Registry** – Add an entry in `modules/Maco_Vuewire/skin/frontend/maco/vuewire/js/bridge/registry.js`: key = PascalCase path (same as `data-ui` without `vue:`), value = `() => import('../components/...')`.
 
+**Layout XML:** Do not add or change layout XML (e.g. `local.xml`, `openwire.xml`) when creating a new component. The theme resolves templates by path; no `<reference name="…">` or `setTemplate` is required unless the user explicitly asks for it.
+
 ## Naming quick reference
 
 - **Openwire id**: snake_case path, e.g. `checkout/cart_item_default`.
