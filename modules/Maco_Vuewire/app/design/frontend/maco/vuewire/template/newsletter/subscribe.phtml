@@ -1,0 +1,10 @@
+<?php
+/**
+ * @see Mage_Newsletter_Block_Subscribe
+ */
+$formActionUrl = method_exists($this, 'getFormActionUrl') ? $this->getFormActionUrl() : '';
+?>
+<div openwire="newsletter/subscribe" data-ui="vue:Newsletter/Subscribe"
+    data-props='<?= json_encode(['formActionUrl' => (string) $formActionUrl]) ?>'>
+    <slot name="formKey"><?= $this->getBlockHtml('formkey') ?></slot>
+</div>
