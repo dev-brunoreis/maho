@@ -1,0 +1,34 @@
+<?php
+/**
+ * @see Mage_Page_Block_Template_Links
+ */
+$_links = $this->getLinks();
+$_title = $this->getTitle();
+$_name = $this->getName();
+$_linksData = [];
+foreach ($_links as $_link) {
+    if ($_link instanceof Mage_Core_Block_Abstract) {
+        $_linksData[] = ['type' => 'html', 'html' => $_link->toHtml()];
+    } else {
+        $_linksData[] = [
+            'type' => 'link',
+            'label' => $_link->getLabel(),
+            'url' => $_link->getUrl(),
+            'title' => $_link->getTitle(),
+            'liParams' => $_link->getLiParams(),
+            'aParams' => $_link->getAParams(),
+            'beforeText' => $_link->getBeforeText(),
+            'afterText' => $_link->getAfterText(),
+            'isFirst' => (bool) $_link->getIsFirst(),
+            'isLast' => (bool) $_link->getIsLast(),
+        ];
+    }
+}
+?>
+<div openwire="page/template_links" data-ui="vue:Page/Template/Links"
+    data-props='<?= json_encode([
+        'title' => $_title ? (string) $_title : null,
+        'name' => $_name ? (string) $_name : null,
+        'links' => $_linksData,
+    ]) ?>'>
+</div>
