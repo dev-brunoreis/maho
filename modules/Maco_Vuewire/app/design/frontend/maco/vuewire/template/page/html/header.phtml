@@ -4,8 +4,11 @@
  */
 ?>
 <div openwire="page/html_header" data-ui="vue:Page/Html/Header"
-    data-props='<?= json_encode([]) ?>'>
+    data-props='<?= json_encode([
+        'baseUrl' => $this->getBaseUrl(),
+    ]) ?>'>
     <slot name="logo"><img src="https://placehold.co/100x100" alt="Logo" /></slot>
+    <slot name="topSearch"><?= $this->getChildHtml('topSearch') ?></slot>
     <slot name="welcome"><?= $this->getChildHtml('welcome') ?></slot>
     <slot name="topLinks"><?= $this->getChildHtml('topLinks') ?></slot>
     <slot name="topMenu"><?= $this->getChildHtml('topMenu') ?></slot>

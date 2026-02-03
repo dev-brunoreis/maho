@@ -1,0 +1,20 @@
+<?php
+/**
+ * @see Mage_Core_Block_Template (block top.search uses this template)
+ * Mini search form; data from Mage_CatalogSearch_Helper_Data.
+ */
+$catalogSearchHelper = $this->helper('catalogsearch');
+?>
+<div openwire="catalogsearch/form_mini" data-ui="vue:Catalogsearch/Form/Mini"
+    data-props='<?= json_encode([
+        'resultUrl' => $catalogSearchHelper->getResultUrl(),
+        'queryParamName' => $catalogSearchHelper->getQueryParamName(),
+        'queryText' => $catalogSearchHelper->getEscapedQueryText(),
+        'maxQueryLength' => (int) $catalogSearchHelper->getMaxQueryLength(),
+        'placeholder' => $this->__('Search entire store here...'),
+        'searchButtonTitle' => $this->__('Search'),
+        'suggestUrl' => $catalogSearchHelper->getSuggestUrl(),
+    ]) ?>'>
+    <slot name="searchButtonContent"><?= $this->getIconSvg('search') ?></slot>
+    <slot name="after"><div id="search_autocomplete" class="search-autocomplete"></div></slot>
+</div>

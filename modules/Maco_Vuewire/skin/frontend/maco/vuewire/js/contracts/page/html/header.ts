@@ -5,6 +5,7 @@ export const PageHtmlHeaderContract =
 
 export type PageHtmlHeaderSlotName =
   | 'logo'
+  | 'topSearch'
   | 'welcome'
   | 'topLinks'
   | 'topMenu'
@@ -15,5 +16,6 @@ export type PageHtmlHeaderSlots =
   Partial<Record<PageHtmlHeaderSlotName, HtmlString>> & SlotHtmlMap;
 
 export interface PageHtmlHeaderPropsV1 {
+  baseUrl?: string;
   slots?: PageHtmlHeaderSlots;
 }

@@ -101,9 +101,23 @@ function warnIfSlotsNotRendered({ el, slotsHtml, contract, logPrefix }) {
   })
 }
 
+function getDepth(el) {
+  let d = 0
+  let node = el
+  while (node && node.parentElement) {
+    d += 1
+    node = node.parentElement
+  }
+  return d
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  const elements = document.querySelectorAll('[data-ui^="vue:"]')
-  elements.forEach(el => {
+  const elements = Array.from(document.querySelectorAll('[data-ui^="vue:"]'))
+  // Mount nested components first (deepest in DOM first) so parent slots contain rendered children
+  elements.sort((a, b) => getDepth(b) - getDepth(a))
+
+  elements.forEach((el) => {
+    if (!el.isConnected) return
     const ui = el.getAttribute('data-ui')
     const componentName = ui.split(':')[1]
     const componentPromise = registry[componentName]
