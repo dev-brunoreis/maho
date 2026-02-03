@@ -1,0 +1,14 @@
+<?php
+/**
+ * @see Mage_Page_Block_Html_Header
+ */
+?>
+<div openwire="page/html_header" data-ui="vue:Page/Html/Header"
+    data-props='<?= json_encode([]) ?>'>
+    <slot name="logo"><img src="https://placehold.co/100x100" alt="Logo" /></slot>
+    <slot name="welcome"><?= $this->getChildHtml('welcome') ?></slot>
+    <slot name="topLinks"><?= $this->getChildHtml('topLinks') ?></slot>
+    <slot name="topMenu"><?= $this->getChildHtml('topMenu') ?></slot>
+    <slot name="before"><?= $this->getChildHtml('before') ?></slot>
+    <slot name="after"><?= $this->getChildHtml('after') ?></slot>
+</div>

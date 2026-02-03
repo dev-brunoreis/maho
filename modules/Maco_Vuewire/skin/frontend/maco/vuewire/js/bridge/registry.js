@@ -1,4 +1,5 @@
 export default {
+    'Page/Html/Header': () => import('../components/Page/Html/Header.vue'),
     'Catalog/Product/View': () => import('../components/Catalog/Product/View.vue'),
     'Catalog/Product/View/Media': () => import('../components/Catalog/Product/View/Media.vue'),
     'Catalog/Product/View/Addtocart': () => import('../components/Catalog/Product/View/Addtocart.vue'),
