@@ -1,0 +1,15 @@
+<?php
+/**
+ * @see Mage_Page_Block_Html_Notices
+ */
+$showDemoNotice = method_exists($this, 'displayDemoNotice') && $this->displayDemoNotice();
+$demoNoticeContent = $showDemoNotice && method_exists($this, 'getDemoNoticeContent')
+    ? $this->getDemoNoticeContent()
+    : '';
+?>
+<div openwire="page/html_notices" data-ui="vue:Page/Html/Notices"
+    data-props='<?= json_encode([
+        'showDemoNotice' => $showDemoNotice,
+        'demoNoticeContent' => (string) $demoNoticeContent,
+    ]) ?>'>
+</div>

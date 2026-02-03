@@ -4,6 +4,7 @@ export default {
     'Page/Html/Breadcrumbs': () => import('../components/Page/Html/Breadcrumbs.vue'),
     'Page/Html/Footer': () => import('../components/Page/Html/Footer.vue'),
     'Page/Html/Header': () => import('../components/Page/Html/Header.vue'),
+    'Page/Html/Notices': () => import('../components/Page/Html/Notices.vue'),
     'Page/Template/Links': () => import('../components/Page/Template/Links.vue'),
     'Catalog/Product/View': () => import('../components/Catalog/Product/View.vue'),
     'Catalog/Product/View/Media': () => import('../components/Catalog/Product/View/Media.vue'),
